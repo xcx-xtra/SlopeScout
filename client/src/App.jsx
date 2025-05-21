@@ -2,6 +2,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import Map from "./components/Map";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,6 +32,9 @@ function App() {
       <h1 className="text-3xl font-bold underline text-blue-500">
         Hello World, Tailwind is working!
       </h1>
+      <div className="my-8">
+        <Map />
+      </div>
     </>
   );
 }
