@@ -6,6 +6,7 @@ import "./App.css";
 import Map from "./components/Map";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import SpotForm from "./components/SpotForm";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -54,6 +55,7 @@ function App() {
               <div className="my-8">
                 <Map />
               </div>
+              <SpotForm />
             </>
           }
         />

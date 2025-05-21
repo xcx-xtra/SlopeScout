@@ -8,4 +8,7 @@ app.use(express.json());
 
 app.use("/api/test", (req, res) => res.send("API up"));
 
+const spotRoutes = require("./routes/spots");
+app.use("/api/spots", spotRoutes);
+
 app.listen(3001, () => console.log("Server running on 3001"));
