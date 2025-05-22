@@ -1,10 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const spotController = require("../controllers/spotController");
 
-router.post("/", (req, res) => {
-  const { name, lat, lng, elevation } = req.body;
-  // Save to Supabase (or mock for now)
-  res.send("Spot received");
-});
+// POST /api/spots
+router.post("/", spotController.createSpot);
+// GET /api/spots
+router.get("/", spotController.getSpots);
+// GET /api/spots/:id
+router.get("/:id", spotController.getSpotById);
+// PUT /api/spots/:id
+router.put("/:id", spotController.updateSpot);
+// DELETE /api/spots/:id
+router.delete("/:id", spotController.deleteSpot);
 
 module.exports = router;

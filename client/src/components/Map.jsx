@@ -1,22 +1,42 @@
 import { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoieGN4LXh0cmEiLCJhIjoiY21heGh2MG56MGFkdjJzb3A5cWlmbmtiaCJ9.LoM-z-6BvavCtV3PP7KkvA"; // Replace with your real token
 
-const Map = () => {
+const Map = ({ onMapClick, marker }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const markerRef = useRef(null);
 
   useEffect(() => {
-    if (map.current) return; // initialize map only once
+    if (map.current) return;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [-74.5, 40],
       zoom: 9,
     });
-  }, []);
+    if (onMapClick) {
+      map.current.on("click", (e) => {
+        onMapClick(e.lngLat);
+      });
+    }
+  }, [onMapClick]);
+
+  useEffect(() => {
+    if (!map.current) return;
+    if (marker) {
+      if (markerRef.current) markerRef.current.remove();
+      markerRef.current = new mapboxgl.Marker()
+        .setLngLat(marker)
+        .addTo(map.current);
+    } else if (markerRef.current) {
+      markerRef.current.remove();
+      markerRef.current = null;
+    }
+  }, [marker]);
 
   return (
     <div
