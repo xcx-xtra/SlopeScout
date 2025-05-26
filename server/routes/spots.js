@@ -13,4 +13,10 @@ router.put("/:id", spotController.updateSpot);
 // DELETE /api/spots/:id
 router.delete("/:id", spotController.deleteSpot);
 
+// Routes for saving/unsaving spots
+router.post("/:spot_id/save", spotController.saveSpot);
+router.delete("/:spot_id/unsave", spotController.unsaveSpot);
+// Route to get user's saved spots - consider moving to a userRoutes.js if it grows
+router.get("/users/me/saved-spots", spotController.getSavedSpots);
+
 module.exports = router;
