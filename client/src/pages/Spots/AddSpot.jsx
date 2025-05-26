@@ -39,7 +39,25 @@ const AddSpot = ({ onAdd }) => {
       setError("You must be logged in to add a spot.");
       return;
     }
-    const spotData = { ...form, user_id: user.id };
+    // Ensure elevation_gain is a number and location is an object
+    const spotData = {
+      user_id: user.id,
+      name: form.name,
+      description: form.description,
+      difficulty: form.difficulty,
+      elevation_gain: form.elevation_gain ? Number(form.elevation_gain) : 0,
+      location: marker ? { lng: marker.lng, lat: marker.lat } : null,
+    };
+    // Validate required fields
+    if (
+      !spotData.name ||
+      !spotData.difficulty ||
+      !spotData.elevation_gain ||
+      !spotData.location
+    ) {
+      setError("Please fill out all required fields and select a location.");
+      return;
+    }
     // Send to backend with Authorization header if token is present
     try {
       const headers = {

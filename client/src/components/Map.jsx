@@ -39,10 +39,12 @@ const Map = ({ onMapClick, marker }) => {
   }, [marker]);
 
   return (
-    <div
-      ref={mapContainer}
-      className="w-full h-96 rounded border border-gray-300 shadow"
-    />
+    <div className="flex justify-center items-center w-full min-h-[400px]">
+      <div
+        ref={mapContainer}
+        className="w-full max-w-3xl h-[400px] rounded border border-gray-300 shadow"
+      />
+    </div>
   );
 };
 
