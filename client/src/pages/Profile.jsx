@@ -55,31 +55,33 @@ const Profile = () => {
 
       // --- Fetch Profile Details (from 'profiles') ---
       try {
+        let profileDataToUpdate = null; // Will hold the profile data to be updated
+
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("*") // Select all columns for now to simplify
+          .select("*")
           .eq("id", currentUser.id)
           .single();
 
         if (profileError) {
-          // Check if the error is due to no rows found with .single()
           if (
             profileError.code === "PGRST116" &&
-            profileError.details?.includes("0 rows") // More robust check for "0 rows"
+            profileError.details?.includes("0 rows")
           ) {
             console.warn(
               "No profile found for user (PGRST116 with .single()):",
               currentUser.id
             );
             setError("Profile not found. Please complete your profile.");
-            setProfileData({
+            profileDataToUpdate = {
+              // Assign to temporary variable
               bio: "",
               avatar_url: defaultAvatar,
-              full_name: currentUser?.email?.split("@")[0] || "Skater", // Use email part as fallback name
-              total_rides: 0,
-              total_distance_km: 0,
-              location: "", // Add other expected fields with defaults
-            });
+              full_name: currentUser?.email?.split("@")[0] || "Skater",
+              total_rides: 0, // Placeholder, will be updated by ride history
+              total_distance_km: 0, // Placeholder, will be updated
+              location: "",
+            };
           } else if (
             profileError.code === "PGRST116" &&
             profileError.message.includes("Could not find a representation")
@@ -91,30 +93,30 @@ const Profile = () => {
             setError(
               "Could not retrieve profile information. The requested data format might not be available or the resource does not exist as expected."
             );
+            // No specific profileDataToUpdate here, error state will be shown
           } else if (profileError.code === "PGRST204") {
-            // No content
             console.warn("No profile found for user:", currentUser.id);
             setError("Profile not found. Please complete your profile.");
-            // Set a default or empty profile structure if needed
-            setProfileData({
+            profileDataToUpdate = {
+              // Assign to temporary variable
               bio: "",
               avatar_url: defaultAvatar,
               full_name: currentUser?.email?.split("@")[0] || "Skater",
-              total_rides: 0,
-              total_distance_km: 0,
+              total_rides: 0, // Placeholder
+              total_distance_km: 0, // Placeholder
               location: "",
-            });
+            };
           } else {
             throw profileError;
           }
         } else if (profile) {
-          setProfileData({
+          profileDataToUpdate = {
+            // Assign to temporary variable
             ...profile,
             avatar_url: profile.avatar_url || defaultAvatar,
-            // Ensure these are numbers, provide defaults if not present or null
-            total_rides: profile.total_rides || 0,
-            total_distance_km: profile.total_distance_km || 0,
-          });
+            total_rides: profile.total_rides || 0, // Use DB value or placeholder
+            total_distance_km: profile.total_distance_km || 0, // Use DB value or placeholder
+          };
         } else {
           console.warn(
             "No profile data returned for user:",
@@ -122,44 +124,71 @@ const Profile = () => {
             "although no explicit error was thrown."
           );
           setError("Profile data is missing. Please complete your profile.");
-          setProfileData({
+          profileDataToUpdate = {
+            // Assign to temporary variable
             bio: "",
             avatar_url: defaultAvatar,
             full_name: currentUser?.email?.split("@")[0] || "Skater",
-            total_rides: 0,
-            total_distance_km: 0,
+            total_rides: 0, // Placeholder
+            total_distance_km: 0, // Placeholder
             location: "",
-          });
+          };
+        }
+
+        if (profileDataToUpdate) {
+          setProfileData(profileDataToUpdate); // Set profile data first
         }
       } catch (error) {
         console.error("Error fetching profile details:", error);
         setError(
           `Failed to fetch profile details: ${error.message}. Please check console for more.`
         );
-        // Fallback profile data in case of any error during fetch
         setProfileData({
+          // Set fallback profile data
           bio: "Bio not available.",
           avatar_url: defaultAvatar,
           full_name: currentUser?.email?.split("@")[0] || "Skater",
-          total_rides: 0,
-          total_distance_km: 0,
+          total_rides: 0, // Placeholder
+          total_distance_km: 0, // Placeholder
           location: "Not set",
         });
       }
 
-      // --- Fetch Ride History (from 'rides' table) ---
+      // --- Fetch Ride History (from 'ride_history' table) ---
+      // This section is now placed after profile fetch, and will update profileData
+      // with calculated ride stats.
       try {
         const { data: rides, error: ridesError } = await supabase
-          .from("ride_history") // Changed 'rides' to 'ride_history'
+          .from("ride_history")
           .select(
             "id, name, ride_date, distance_km, duration_min, spot_id, notes"
-          ) // Ensure 'date' is 'ride_date' as per SQL
+          )
           .eq("user_id", currentUser.id)
-          .order("ride_date", { ascending: false }) // Ensure 'date' is 'ride_date'
-          .limit(10); // Example: limit to 10 most recent rides
+          .order("ride_date", { ascending: false })
+          .limit(10);
 
         if (ridesError) throw ridesError;
         setRideHistory(rides || []);
+
+        // Calculate total_rides and total_distance_km from rideHistory
+        // and update the profileData state
+        setProfileData((prevProfileData) => {
+          const calculatedTotalRides = rides ? rides.length : 0;
+          const calculatedTotalDistance = rides
+            ? rides.reduce((sum, ride) => sum + (ride.distance_km || 0), 0)
+            : 0;
+          return {
+            ...(prevProfileData || {
+              // Ensure prevProfileData is at least an empty object
+              bio: "", // Default bio if not set
+              avatar_url: defaultAvatar, // Default avatar if not set
+              full_name: currentUser?.email?.split("@")[0] || "Skater", // Default name
+              location: "", // Default location
+            }),
+            total_rides: calculatedTotalRides,
+            total_distance_km: parseFloat(calculatedTotalDistance.toFixed(2)),
+          };
+        });
       } catch (e) {
         console.error("Error fetching ride history:", e);
         setError(
@@ -193,22 +222,59 @@ const Profile = () => {
 
         // Transform data to match expected structure if needed
         const favorites = saved
-          ? saved.map((s) => ({
-              ...s.spots, // Spread the spot details
-              id: s.spot_id, // Ensure the id is the spot_id from saved_spots context
-              // Add a placeholder for average_rating if not directly available
-              average_rating:
-                s.spots?.average_rating ||
-                4.0 + parseFloat((Math.random() * 0.9).toFixed(1)), // Ensure this is a number
-            }))
+          ? saved
+              .map((s) => {
+                if (s.spots && typeof s.spots === "object") {
+                  return {
+                    ...s.spots, // Spread the spot details
+                    id: s.spot_id, // Ensure the id is the spot_id from saved_spots context
+                    average_rating:
+                      s.spots.average_rating ||
+                      4.0 + parseFloat((Math.random() * 0.9).toFixed(1)), // Ensure this is a number
+                  };
+                } else {
+                  console.warn(
+                    `Saved spot with spot_id ${s.spot_id} is missing spot details or spot details are not an object. Skipping.`
+                  );
+                  return null;
+                }
+              })
+              .filter((spot) => spot !== null) // Filter out any null entries
           : [];
         setFavoriteSpots(favorites);
       } catch (e) {
-        console.error("Error fetching favorite spots:", e); // Log the full error object
+        console.error("Full error object fetching favorite spots:", e); // Log the full error object
+
+        let errorTitle = "Could not load favorite spots.";
+        let detailMessage = "";
+
+        if (e && typeof e === "object") {
+          detailMessage = e.message
+            ? `Message: ${e.message}`
+            : "No specific message.";
+          if (e.code) detailMessage += ` (Code: ${e.code})`;
+          if (e.details) console.error("Error details:", e.details);
+          if (e.hint) console.error("Error hint:", e.hint);
+
+          // For toast, keep it concise but include code if available
+          toast.error(
+            `${errorTitle} ${e.message ? e.message : ""}${
+              e.code ? ` (Code: ${e.code})` : ""
+            }`
+          );
+        } else if (typeof e === "string") {
+          detailMessage = `Error: ${e}`;
+          toast.error(`${errorTitle} ${e}`);
+        } else {
+          toast.error(errorTitle);
+        }
+
+        console.error(`Error fetching favorite spots - ${detailMessage}`);
         setError(
-          (prev) => (prev ? prev + "\n" : "") + "Could not load favorite spots."
+          (prev) =>
+            (prev ? prev + "\\n" : "") +
+            `${errorTitle} Check console for more details.`
         );
-        toast.error("Could not load favorite spots: " + e.message);
         setFavoriteSpots([]); // Set to empty array on error
       }
 
