@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; /* Updated font-family */
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* color: rgba(255, 255, 255, 0.87); Removed default dark mode text color */
+  /* background-color: #242424; Removed default dark mode background */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,10 +28,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  /* display: flex; Removed */
+  /* place-items: center; Removed */
+  /* min-width: 320px; Removed */
   min-height: 100vh;
+  background-color: #f3f4f6; /* Added a light gray background as a base */
+  color: #1f2937; /* Added a default dark text color for light mode */
 }
 
 h1 {
