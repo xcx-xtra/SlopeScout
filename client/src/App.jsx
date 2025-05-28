@@ -200,6 +200,10 @@ function App() {
               <Route path="/spots/:id/edit" element={<EditSpot />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/manage-spots" element={<ManageSpots />} />
+              <Route path="/login" element={<Login />} />{" "}
+              {/* Ensure Login route exists */}
+              <Route path="/register" element={<Register />} />{" "}
+              {/* Ensure Register route exists */}
             </Routes>
           </ErrorBoundary>
         </main>
