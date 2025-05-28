@@ -9,8 +9,15 @@ import Map from "./components/Map";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import SpotForm from "./components/SpotForm";
-import { AddSpot, SpotDetail, EditSpot, ManageSpots } from "./pages/Spots"; // Added ManageSpots
+import {
+  AddSpot,
+  SpotDetail,
+  EditSpot,
+  ManageSpots,
+  SpotList,
+} from "./pages/Spots"; // Added ManageSpots and SpotList
 import Profile from "./pages/Profile"; // Import the Profile component
+import SpotPage from "./pages/SpotPage"; // Import SpotPage
 import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
@@ -187,13 +194,12 @@ function App() {
                   </div>
                 }
               />
-              <Route path="/add-spot" element={<AddSpot />} />{" "}
-              {/* Changed from /spots/add */}
-              <Route path="/spots/:id" element={<SpotDetail />} />
+              <Route path="/spots" element={<SpotList />} />
+              <Route path="/add-spot" element={<AddSpot />} />
+              <Route path="/spots/:spotId" element={<SpotPage />} />
               <Route path="/spots/:id/edit" element={<EditSpot />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/manage-spots" element={<ManageSpots />} />{" "}
-              {/* Route for ManageSpots */}
+              <Route path="/manage-spots" element={<ManageSpots />} />
             </Routes>
           </ErrorBoundary>
         </main>

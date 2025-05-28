@@ -7,3 +7,5 @@ export { default as SpotDetail } from "./SpotDetail";
 export { default as EditSpot } from "./EditSpot";
 // ManageSpots: Manage multiple spots
 export { default as ManageSpots } from "./ManageSpots";
+// SpotList: View all spots
+export { default as SpotList } from "./SpotList";
