@@ -197,12 +197,20 @@ exports.updateSpot = async (req, res) => {
 
 // DELETE /api/spots/:id - Delete
 exports.deleteSpot = async (req, res) => {
-  const { id } = req.params;
+  const spotIdParam = req.params.id; // Keep original param for logging
+  const spotId = parseInt(spotIdParam, 10); // Ensure ID is an integer
+
+  if (isNaN(spotId)) {
+    console.error(`Invalid spot ID format: ${spotIdParam}`);
+    return res.status(400).json({ error: "Invalid spot ID format." });
+  }
+
   const authHeader = req.headers["authorization"];
   const token =
     authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   if (!token) {
+    console.error(`Delete Spot ID ${spotId}: No token provided.`);
     return res.status(401).json({ error: "User not authenticated" });
   }
 
@@ -210,49 +218,132 @@ exports.deleteSpot = async (req, res) => {
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser(token);
+    } = await supabase.auth.getUser(token); // Get user details using the global client
 
     if (userError || !user) {
-      console.error("Error fetching user for delete:", userError);
+      console.error(
+        `Delete Spot ID ${spotId}: Invalid token or user not found.`,
+        userError
+      );
       return res.status(401).json({ error: "Invalid token or user not found" });
     }
 
-    const { data: spotData, error: spotError } = await supabase
-      .from("spots")
-      .select("user_id")
-      .eq("id", id)
-      .single();
+    // Create a new Supabase client instance scoped to this user for data operations
+    const userScopedSupabaseClient = createClient(
+      process.env.VITE_SUPABASE_URL,
+      process.env.VITE_SUPABASE_ANON_KEY, // Use the anon key here
+      { global: { headers: { Authorization: `Bearer ${token}` } } }
+    );
 
-    if (spotError || !spotData) {
-      console.error("Error fetching spot for delete:", spotError);
-      return res.status(404).json({ error: "Spot not found" });
+    // Pre-check ownership using the user-scoped client
+    const { data: spotToDelete, error: spotFetchError } =
+      await userScopedSupabaseClient
+        .from("spots")
+        .select("user_id") // RLS for SELECT must allow this user to see user_id
+        .eq("id", spotId)
+        .single();
+
+    if (spotFetchError) {
+      console.error(
+        `Error fetching spot for delete pre-check (ID ${spotId}) using user-scoped client:`,
+        spotFetchError
+      );
+      if (spotFetchError.code === "PGRST116") {
+        // No rows found
+        return res
+          .status(404)
+          .json({ error: "Spot not found for pre-check (user-scoped)." });
+      }
+      return res.status(500).json({
+        error: "Error fetching spot data for pre-check (user-scoped).",
+      });
     }
 
-    if (spotData.user_id !== user.id) {
-      return res
-        .status(403)
-        .json({ error: "User not authorized to delete this spot" });
+    if (spotToDelete.user_id !== user.id) {
+      console.warn(
+        `Delete Spot ID ${spotId}: User ${user.id} attempted to delete spot owned by ${spotToDelete.user_id}. (Pre-check with user-scoped client)`
+      );
+      return res.status(403).json({
+        error: "User not authorized to delete this spot (application check).",
+      });
     }
 
-    const { error: deleteError } = await supabase
+    console.log(
+      `Attempting to delete spot ID ${spotId} by user ${user.id} using user-scoped client.`
+    );
+
+    const {
+      data: deleteResponseData,
+      error: deleteError,
+      count: deleteCount,
+    } = await userScopedSupabaseClient
       .from("spots")
-      .delete()
-      .eq("id", id);
+      .delete({ count: "exact" }) // Ensure { count: "exact" } is applied
+      .eq("id", spotId)
+      .eq("user_id", user.id);
+
+    console.log(
+      `User-scoped delete for spot ID ${spotId}, user ${user.id} (chained .eq(), with { count: "exact" }) result:\n`,
+      `  Response Data: `,
+      deleteResponseData,
+      `\n`,
+      `  Error: `,
+      deleteError,
+      `\n`,
+      `  Count: `,
+      deleteCount
+    );
 
     if (deleteError) {
-      console.error("Supabase delete error:", deleteError);
-      return res.status(400).json({ error: deleteError.message });
+      console.error(
+        `Supabase delete error for spot ID ${spotId} (user-scoped client):`,
+        deleteError
+      );
+      return res
+        .status(400)
+        .json({ error: deleteError.message, details: deleteError });
     }
-    res.json({ success: true, message: "Spot deleted successfully" });
+
+    // With { count: "exact" }, deleteCount should ideally be a number (0 or more).
+    // A null count here is unexpected and indicates an issue.
+    if (deleteCount === null) {
+      console.error(
+        `Supabase returned null count for user-scoped delete of spot ID ${spotId} by user ${user.id} even with { count: "exact" }. This is unexpected. Treating as failure.`
+      );
+      return res.status(500).json({
+        error:
+          "Failed to delete spot. Uncertain outcome from database operation.",
+      });
+    }
+
+    if (deleteCount === 0) {
+      console.warn(
+        `Spot ID ${spotId} was not deleted (count is 0) with user-scoped client and { count: "exact" }. User ${user.id}. ` +
+          `RLS likely prevented the delete, or the spot was already gone/not matching conditions.`
+      );
+      return res.status(404).json({
+        error:
+          "Spot not found or user not authorized to delete this spot (delete count was 0).",
+      });
+    }
+
+    // If deleteCount > 0, the deletion was successful.
+    console.log(
+      `Successfully deleted spot ID ${spotId} by user ${user.id}. Count: ${deleteCount}.`
+    );
+    res.json({ message: "Spot deleted successfully" });
   } catch (err) {
-    console.error("Server error during spot deletion:", err);
-    res.status(500).json({ error: "Internal server error" });
+    console.error(
+      `Server error during spot delete for ID ${spotIdParam} (user-scoped attempt):`,
+      err
+    );
+    res.status(500).json({ error: "Internal server error during spot delete" });
   }
 };
 
 // --- Saved Spots ---
 
-// POST /api/spots/:spot_id/save - Save a spot for the current user
+// POST /api/spots/:spot_id/save - Save a spot
 exports.saveSpot = async (req, res) => {
   const { spot_id } = req.params;
   const authHeader = req.headers["authorization"];
@@ -260,7 +351,8 @@ exports.saveSpot = async (req, res) => {
     authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   if (!token) {
-    return res.status(401).json({ error: "User not authenticated" });
+    console.error("Save Spot Error: No token provided.");
+    return res.status(401).json({ error: "User not authenticated." });
   }
 
   try {
@@ -270,9 +362,16 @@ exports.saveSpot = async (req, res) => {
     } = await supabase.auth.getUser(token);
 
     if (userError || !user) {
-      return res.status(401).json({ error: "Invalid token" });
+      console.error(
+        "Save Spot Error: Invalid token or user not found.",
+        userError
+      );
+      return res
+        .status(401)
+        .json({ error: "Invalid token or user not found." });
     }
 
+    // Check if the spot exists
     const { data: spotExists, error: spotCheckError } = await supabase
       .from("spots")
       .select("id")
@@ -280,9 +379,14 @@ exports.saveSpot = async (req, res) => {
       .single();
 
     if (spotCheckError || !spotExists) {
-      return res.status(404).json({ error: "Spot not found" });
+      console.error(
+        "Save Spot Error: Spot not found or error checking spot.",
+        spotCheckError
+      );
+      return res.status(404).json({ error: "Spot not found." });
     }
 
+    // Check if already saved
     const { data: existingSave, error: existingSaveError } = await supabase
       .from("saved_spots")
       .select("*")
@@ -290,31 +394,42 @@ exports.saveSpot = async (req, res) => {
       .eq("spot_id", spot_id)
       .maybeSingle();
 
-    if (existingSaveError && existingSaveError.code !== "PGRST116") {
-      console.error("Error checking existing saved spot:", existingSaveError);
-      return res.status(500).json({ error: "Error checking saved status" });
+    if (existingSaveError) {
+      console.error(
+        "Save Spot Error: Error checking for existing save.",
+        existingSaveError
+      );
+      return res.status(500).json({
+        error: "Database error checking saved status.",
+        details: existingSaveError.message,
+      });
     }
+
     if (existingSave) {
-      return res.status(409).json({ message: "Spot already saved" });
+      return res.status(409).json({ message: "Spot already saved." }); // 409 Conflict
     }
 
-    const { data, error } = await supabase
+    const { data, error: saveError } = await supabase
       .from("saved_spots")
-      .insert([{ user_id: user.id, spot_id: parseInt(spot_id) }])
-      .select();
+      .insert([{ user_id: user.id, spot_id: parseInt(spot_id) }]) // Ensure spot_id is integer
+      .select(); // Optionally select the created record
 
-    if (error) {
-      console.error("Supabase save spot error:", error);
-      return res.status(400).json({ error: error.message, details: error });
+    if (saveError) {
+      console.error("Save Spot Error: Supabase insert error.", saveError);
+      return res
+        .status(400)
+        .json({ error: "Failed to save spot.", details: saveError.message });
     }
-    res.status(201).json({ message: "Spot saved successfully", data });
+    res
+      .status(201)
+      .json({ message: "Spot saved successfully!", data: data ? data[0] : {} });
   } catch (err) {
-    console.error("Server error during save spot:", err);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Save Spot Error: Server error.", err);
+    res.status(500).json({ error: "Internal server error while saving spot." });
   }
 };
 
-// DELETE /api/spots/:spot_id/unsave - Unsave a spot for the current user
+// DELETE /api/spots/:spot_id/unsave - Unsave a spot
 exports.unsaveSpot = async (req, res) => {
   const { spot_id } = req.params;
   const authHeader = req.headers["authorization"];
@@ -322,7 +437,8 @@ exports.unsaveSpot = async (req, res) => {
     authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   if (!token) {
-    return res.status(401).json({ error: "User not authenticated" });
+    console.error("Unsave Spot Error: No token provided.");
+    return res.status(401).json({ error: "User not authenticated." });
   }
 
   try {
@@ -332,23 +448,33 @@ exports.unsaveSpot = async (req, res) => {
     } = await supabase.auth.getUser(token);
 
     if (userError || !user) {
-      return res.status(401).json({ error: "Invalid token" });
+      console.error(
+        "Unsave Spot Error: Invalid token or user not found.",
+        userError
+      );
+      return res
+        .status(401)
+        .json({ error: "Invalid token or user not found." });
     }
 
-    const { error } = await supabase
+    const { error: deleteError } = await supabase
       .from("saved_spots")
       .delete()
-      .eq("user_id", user.id)
-      .eq("spot_id", parseInt(spot_id));
+      .match({ user_id: user.id, spot_id: parseInt(spot_id) }); // Ensure spot_id is integer
 
-    if (error) {
-      console.error("Supabase unsave spot error:", error);
-      return res.status(400).json({ error: error.message, details: error });
+    if (deleteError) {
+      console.error("Unsave Spot Error: Supabase delete error.", deleteError);
+      return res.status(400).json({
+        error: "Failed to unsave spot.",
+        details: deleteError.message,
+      });
     }
-    res.json({ message: "Spot unsaved successfully" });
+    res.json({ message: "Spot unsaved successfully!" });
   } catch (err) {
-    console.error("Server error during unsave spot:", err);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Unsave Spot Error: Server error.", err);
+    res
+      .status(500)
+      .json({ error: "Internal server error while unsaving spot." });
   }
 };
 
@@ -359,7 +485,8 @@ exports.getSavedSpots = async (req, res) => {
     authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   if (!token) {
-    return res.status(401).json({ error: "User not authenticated" });
+    console.error("Get Saved Spots Error: No token provided.");
+    return res.status(401).json({ error: "User not authenticated." });
   }
 
   try {
@@ -369,38 +496,213 @@ exports.getSavedSpots = async (req, res) => {
     } = await supabase.auth.getUser(token);
 
     if (userError || !user) {
-      return res.status(401).json({ error: "Invalid token" });
+      console.error(
+        "Get Saved Spots Error: Invalid token or user not found.",
+        userError
+      );
+      return res
+        .status(401)
+        .json({ error: "Invalid token or user not found." });
     }
 
-    const { data: savedSpotEntries, error: savedError } = await supabase
+    const { data, error } = await supabase
       .from("saved_spots")
-      .select("spot_id")
+      .select(
+        `
+        spot_id, 
+        spots (
+          id, 
+          name, 
+          description, 
+          difficulty, 
+          location, 
+          image_url, 
+          location_address, 
+          created_at
+        )
+      `
+      )
       .eq("user_id", user.id);
 
-    if (savedError) {
-      console.error("Supabase get saved spots error:", savedError);
-      return res.status(400).json({ error: savedError.message });
+    if (error) {
+      console.error("Get Saved Spots Error: Supabase select error.", error);
+      return res.status(400).json({
+        error: "Failed to retrieve saved spots.",
+        details: error.message,
+      });
     }
-
-    if (!savedSpotEntries || savedSpotEntries.length === 0) {
-      return res.json([]);
-    }
-
-    const spotIds = savedSpotEntries.map((entry) => entry.spot_id);
-
-    const { data: spots, error: spotsError } = await supabase
-      .from("spots")
-      .select("*")
-      .in("id", spotIds);
-
-    if (spotsError) {
-      console.error("Supabase get spot details error:", spotsError);
-      return res.status(400).json({ error: spotsError.message });
-    }
-
-    res.json(spots);
+    // Transform data to return an array of spot objects directly
+    const savedSpotsDetails = data ? data.map((s) => s.spots) : [];
+    res.json(savedSpotsDetails);
   } catch (err) {
-    console.error("Server error during get saved spots:", err);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Get Saved Spots Error: Server error.", err);
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// GET /api/spots/user/my-spots - Get all spots created by the current user
+exports.getUserSpots = async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token =
+    authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+
+  if (!token) {
+    console.error("Get User Spots Error: No token provided.");
+    return res.status(401).json({ error: "User not authenticated." });
+  }
+
+  try {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
+      console.error(
+        "Get User Spots Error: Invalid token or user not found.",
+        userError
+      );
+      return res
+        .status(401)
+        .json({ error: "Invalid token or user not found." });
+    }
+
+    const { data, error } = await supabase
+      .from("spots")
+      .select("*") // Select all spot details
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }); // Optional: order by creation date
+
+    if (error) {
+      console.error("Get User Spots Error: Supabase select error.", error);
+      return res.status(400).json({
+        error: "Failed to retrieve user spots.",
+        details: error.message,
+      });
+    }
+    res.json(data);
+  } catch (err) {
+    console.error("Get User Spots Error: Server error.", err);
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// GET /api/spots/:spot_id/reviews - Get all reviews for a spot
+exports.getSpotReviews = async (req, res) => {
+  const { spot_id } = req.params;
+  try {
+    const { data, error } = await supabase
+      .from("reviews")
+      .select(
+        `
+        id,
+        comment,
+        rating,
+        created_at,
+        user_id,
+        profiles (
+          full_name,
+          avatar_url
+        )
+      `
+      )
+      .eq("spot_id", spot_id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(`Error fetching reviews for spot ${spot_id}:`, error);
+      return res
+        .status(400)
+        .json({ error: "Failed to retrieve reviews.", details: error.message });
+    }
+    res.json(data);
+  } catch (err) {
+    console.error(`Server error fetching reviews for spot ${spot_id}:`, err);
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// POST /api/spots/:spot_id/reviews - Create a review for a spot
+exports.createSpotReview = async (req, res) => {
+  const { spot_id } = req.params;
+  const { rating, comment } = req.body;
+  const authHeader = req.headers["authorization"];
+  const token =
+    authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+
+  if (!token) {
+    return res.status(401).json({ error: "User not authenticated." });
+  }
+
+  if (!rating || !comment) {
+    return res.status(400).json({ error: "Rating and comment are required." });
+  }
+  if (typeof rating !== "number" || rating < 1 || rating > 5) {
+    return res
+      .status(400)
+      .json({ error: "Rating must be a number between 1 and 5." });
+  }
+  if (typeof comment !== "string" || comment.trim().length === 0) {
+    return res.status(400).json({ error: "Comment cannot be empty." });
+  }
+
+  try {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
+      return res
+        .status(401)
+        .json({ error: "Invalid token or user not found." });
+    }
+
+    // Check if the spot exists
+    const { data: spotExists, error: spotCheckError } = await supabase
+      .from("spots")
+      .select("id")
+      .eq("id", spot_id)
+      .single();
+
+    if (spotCheckError || !spotExists) {
+      return res.status(404).json({ error: "Spot not found." });
+    }
+
+    const { data, error: reviewError } = await supabase
+      .from("reviews")
+      .insert([
+        {
+          spot_id: parseInt(spot_id),
+          user_id: user.id,
+          rating,
+          comment: comment.trim(),
+        },
+      ])
+      .select(
+        `
+        id,
+        comment,
+        rating,
+        created_at,
+        user_id,
+        profiles (
+          full_name,
+          avatar_url
+        )
+      `
+      );
+
+    if (reviewError) {
+      console.error(`Error creating review for spot ${spot_id}:`, reviewError);
+      return res.status(400).json({
+        error: "Failed to create review.",
+        details: reviewError.message,
+      });
+    }
+    res.status(201).json(data && data.length > 0 ? data[0] : {});
+  } catch (err) {
+    console.error(`Server error creating review for spot ${spot_id}:`, err);
+    res.status(500).json({ error: "Internal server error." });
   }
 };

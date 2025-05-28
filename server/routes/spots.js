@@ -18,5 +18,11 @@ router.post("/:spot_id/save", spotController.saveSpot);
 router.delete("/:spot_id/unsave", spotController.unsaveSpot);
 // Route to get user's saved spots - consider moving to a userRoutes.js if it grows
 router.get("/users/me/saved-spots", spotController.getSavedSpots);
+// Route to get spots created by the current user
+router.get("/user/my-spots", spotController.getUserSpots);
+
+// Routes for spot reviews
+router.get("/:spot_id/reviews", spotController.getSpotReviews);
+router.post("/:spot_id/reviews", spotController.createSpotReview);
 
 module.exports = router;

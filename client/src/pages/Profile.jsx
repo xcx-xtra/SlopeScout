@@ -468,7 +468,7 @@ const Profile = () => {
             <span>Favorite Spots</span>
             {favoriteSpots.length > 0 && (
               <Link
-                to="/spots/favorites"
+                to="/spots/favorites" // This route doesn't exist yet, might need a dedicated page or integrate into map
                 className="text-sm text-primary-400 hover:text-primary-300 flex items-center"
               >
                 View All <FiChevronRight className="ml-1" />
@@ -483,7 +483,7 @@ const Profile = () => {
                   key={spot.id}
                   className="bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-150 group"
                 >
-                  {spot.image_url ? ( // This will now likely be false until image_url is re-added and populated
+                  {spot.image_url ? (
                     <img
                       src={spot.image_url}
                       alt={spot.name || "Spot image"}
@@ -510,11 +510,10 @@ const Profile = () => {
                     <div className="flex items-center text-xs">
                       <FiStar className="text-yellow-400 mr-1" />
                       <span className="text-neutral-300">
-                        {spot.average_rating
+                        {spot.average_rating // This field might not exist on 'spots' table directly
                           ? parseFloat(spot.average_rating).toFixed(1)
                           : "N/A"}
                       </span>
-                      {/* <span className="text-neutral-500 ml-1">(placeholder rating)</span> */}
                     </div>
                   </div>
                 </Link>
@@ -527,7 +526,7 @@ const Profile = () => {
                   Explore and save some cool spots!
                 </p>
                 <Link
-                  to="/spots"
+                  to="/"
                   className="mt-3 inline-block px-4 py-2 text-sm bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-lg"
                 >
                   Find Spots

@@ -9,7 +9,7 @@ import Map from "./components/Map";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import SpotForm from "./components/SpotForm";
-import { AddSpot, SpotList, SpotDetail, EditSpot } from "./pages/Spots";
+import { AddSpot, SpotDetail, EditSpot, ManageSpots } from "./pages/Spots"; // Added ManageSpots
 import Profile from "./pages/Profile"; // Import the Profile component
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -70,14 +70,6 @@ function App() {
               </li>
               <li>
                 <Link
-                  to="/spots"
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Spots
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/add-spot"
                   className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
                 >
@@ -90,6 +82,14 @@ function App() {
                   className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Profile
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/manage-spots" // Link to ManageSpots
+                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  My Spots
                 </Link>
               </li>
               <li>
@@ -121,13 +121,6 @@ function App() {
                 Home
               </Link>
               <Link
-                to="/spots"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Spots
-              </Link>
-              <Link
                 to="/add-spot"
                 className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -140,6 +133,13 @@ function App() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Profile
+              </Link>
+              <Link
+                to="/manage-spots" // Link to ManageSpots in mobile
+                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                My Spots
               </Link>
               <Link
                 to="/login"
@@ -189,26 +189,14 @@ function App() {
               />
               <Route path="/add-spot" element={<AddSpot />} />{" "}
               {/* Changed from /spots/add */}
-              <Route path="/spots" element={<SpotList />} />
               <Route path="/spots/:id" element={<SpotDetail />} />
               <Route path="/spots/:id/edit" element={<EditSpot />} />
-              <Route path="/login" element={<Login onLogin={() => {}} />} />
-              <Route
-                path="/register"
-                element={<Register onRegister={() => {}} />}
-              />
-              <Route path="/profile" element={<Profile />} />{" "}
-              {/* Add this line */}
-              {/* <Route path="/page" element={<Page />} /> */}
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/manage-spots" element={<ManageSpots />} />{" "}
+              {/* Route for ManageSpots */}
             </Routes>
           </ErrorBoundary>
         </main>
-        <footer className="bg-neutral-800 text-neutral-300 p-4 text-center text-sm">
-          <p>
-            &copy; {new Date().getFullYear()} SlopeScout. All rights reserved.
-          </p>
-          <p className="text-xs text-neutral-500">Crafted with 🛹 and 💻</p>
-        </footer>
         <ToastContainer
           position="bottom-right"
           autoClose={5000}

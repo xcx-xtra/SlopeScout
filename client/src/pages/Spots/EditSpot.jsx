@@ -350,7 +350,7 @@ const EditSpot = () => {
         <div className="mt-10 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row justify-end sm:space-x-3 space-y-3 sm:space-y-0">
           <button
             type="button" // Important: type="button" to prevent form submission
-            onClick={() => navigate(spot ? `/spots/${id}` : "/spots")}
+            onClick={() => navigate(id ? `/spots/${id}` : "/")}
             className="w-full sm:w-auto bg-neutral-200 hover:bg-neutral-300 text-neutral-700 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-opacity-75 flex items-center justify-center"
           >
             <svg
