@@ -17,6 +17,7 @@ const AddSpot = ({ onAdd }) => {
   const [marker, setMarker] = useState(null); // If using map click
   const [currentUser, setCurrentUser] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false); // Define locationLoading state
 
   // Fetch current user on component mount
   useEffect(() => {
@@ -36,14 +37,26 @@ const AddSpot = ({ onAdd }) => {
         async (position) => {
           const { latitude, longitude } = position.coords;
           setMarker({ lat: latitude, lng: longitude });
-          // Basic reverse geocoding (browser-based, might need a service for better results)
-          // This is a placeholder. For production, use a geocoding API.
+          // Use the backend proxy for initial geolocation as well
+          const url = `/api/geocode/reverse?lat=${latitude}&lon=${longitude}`;
           try {
-            // NOTE: Nominatim is a free service, rate limits apply. Replace with a robust paid service for production.
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-            );
-            if (!response.ok) throw new Error("Failed to fetch address");
+            const response = await fetch(url, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error(
+                "Error data from backend (initial geoloc):",
+                errorData
+              );
+              throw new Error(
+                `HTTP error! status: ${response.status} - ${
+                  errorData.error || "Failed to fetch initial address"
+                }`
+              );
+            }
             const data = await response.json();
             setForm((prevForm) => ({
               ...prevForm,
@@ -78,32 +91,47 @@ const AddSpot = ({ onAdd }) => {
     }
   }, []);
 
-  const handleMapClick = useCallback(
-    async (lngLat) => {
-      setMarker(lngLat);
-      // Attempt to reverse geocode on map click as well
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lngLat.lat}&lon=${lngLat.lng}`
+  const handleMapClick = async (lngLat) => {
+    setMarker(lngLat); // Correctly update the marker state
+    setLocationLoading(true);
+    // Update the URL to call your backend proxy
+    const url = `/api/geocode/reverse?lat=${lngLat.lat}&lon=${lngLat.lng}`;
+    try {
+      // const response = await fetch(url);
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
+      const response = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        const errorData = await response.json(); // Try to get error details from backend
+        console.error("Error data from backend:", errorData);
+        throw new Error(
+          `HTTP error! status: ${response.status} - ${
+            errorData.error || "Failed to fetch address"
+          }`
         );
-        if (!response.ok) throw new Error("Failed to fetch address");
-        const data = await response.json();
-        setForm((prevForm) => ({
-          ...prevForm,
-          location_address: data.display_name || "Selected on map",
-        }));
-      } catch (error) {
-        console.error("Error fetching address from map click: ", error);
-        setForm((prevForm) => ({
-          ...prevForm,
-          location_address: `Lat: ${lngLat.lat.toFixed(
-            5
-          )}, Lng: ${lngLat.lng.toFixed(5)} (Address lookup failed)`,
-        }));
       }
-    },
-    [setMarker, setForm]
-  );
+      const data = await response.json();
+      setForm((prevForm) => ({
+        ...prevForm,
+        location_address: data.display_name || "Selected on map",
+      }));
+    } catch (error) {
+      console.error("Error fetching address from map click: ", error);
+      setForm((prevForm) => ({
+        ...prevForm,
+        location_address: `Lat: ${lngLat.lat.toFixed(
+          5
+        )}, Lng: ${lngLat.lng.toFixed(5)} (Address lookup failed)`,
+      }));
+    } finally {
+      setLocationLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
