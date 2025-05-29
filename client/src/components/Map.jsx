@@ -44,6 +44,29 @@ const Map = ({ onMapClick, marker, spots }) => {
       });
     });
 
+    // Attempt to set map center to user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (map.current) {
+            const { latitude, longitude } = position.coords;
+            map.current.setCenter([longitude, latitude]);
+            map.current.setZoom(13); // Optionally set a closer zoom level
+          }
+        },
+        (error) => {
+          console.warn(
+            "Error getting user location for map default:",
+            error.message
+          );
+          // Map will remain at the default center specified in new mapboxgl.Map()
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    } else {
+      console.warn("Geolocation is not supported by this browser.");
+    }
+
     if (onMapClick) {
       map.current.on("click", (e) => {
         // Prevent placing new marker if clicking on an existing one (optional)
