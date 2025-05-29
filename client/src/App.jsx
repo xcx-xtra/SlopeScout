@@ -31,14 +31,14 @@ function App() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <Link
               to="/"
-              className="text-2xl font-bold hover:text-primary-light transition-colors"
+              className="text-2xl font-bold text-white hover:text-accent-400 transition-colors"
             >
               SlopeScout
             </Link>
             <div className="md:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white focus:outline-none p-2 rounded-md hover:bg-primary-dark focus:bg-primary-dark"
+                className="text-white focus:outline-none p-2 rounded-md hover:bg-primary focus:bg-primary transition-colors"
               >
                 <svg
                   className="w-6 h-6"
@@ -70,7 +70,7 @@ function App() {
               <li>
                 <Link
                   to="/"
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-neutral-300 hover:text-white hover:bg-primary transition-colors px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Home
                 </Link>
@@ -78,7 +78,7 @@ function App() {
               <li>
                 <Link
                   to="/add-spot"
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-neutral-300 hover:text-white hover:bg-primary transition-colors px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Add Spot
                 </Link>
@@ -86,7 +86,7 @@ function App() {
               <li>
                 <Link
                   to="/profile"
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-neutral-300 hover:text-white hover:bg-primary transition-colors px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Profile
                 </Link>
@@ -94,7 +94,7 @@ function App() {
               <li>
                 <Link
                   to="/manage-spots" // Link to ManageSpots
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-neutral-300 hover:text-white hover:bg-primary transition-colors px-3 py-2 rounded-md text-sm font-medium"
                 >
                   My Spots
                 </Link>
@@ -110,7 +110,7 @@ function App() {
               <li>
                 <Link
                   to="/register"
-                  className="border border-primary-light hover:bg-primary-light hover:text-primary-dark text-primary-light px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="border border-accent-500 text-accent-500 hover:bg-accent-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Register
                 </Link>
@@ -122,28 +122,28 @@ function App() {
             <div className="md:hidden absolute top-16 inset-x-0 bg-primary-dark p-2 space-y-1 sm:px-3 z-50 shadow-lg">
               <Link
                 to="/"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                className="block px-3 py-2 rounded-md text-base font-medium text-neutral-300 hover:bg-primary hover:text-white transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 to="/add-spot"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                className="block px-3 py-2 rounded-md text-base font-medium text-neutral-300 hover:bg-primary hover:text-white transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Add Spot
               </Link>
               <Link
                 to="/profile"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                className="block px-3 py-2 rounded-md text-base font-medium text-neutral-300 hover:bg-primary hover:text-white transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Profile
               </Link>
               <Link
                 to="/manage-spots" // Link to ManageSpots in mobile
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                className="block px-3 py-2 rounded-md text-base font-medium text-neutral-300 hover:bg-primary hover:text-white transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 My Spots
@@ -157,7 +157,7 @@ function App() {
               </Link>
               <Link
                 to="/register"
-                className="block px-3 py-2 rounded-md text-base font-medium text-primary-light border border-primary-light hover:bg-primary-light hover:text-primary-dark transition-colors"
+                className="block px-3 py-2 rounded-md text-base font-medium text-accent-500 border border-accent-500 hover:bg-accent-500 hover:text-white transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Register
