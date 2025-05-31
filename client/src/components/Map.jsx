@@ -15,9 +15,12 @@ const Map = ({ onMapClick, marker, spots }) => {
     if (map.current) return;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/outdoors-v12", // Changed to a style with terrain
-      center: [-74.5, 40],
-      zoom: 9,
+      style: "mapbox://styles/mapbox/satellite-streets-v12", // Changed to satellite streets style
+      center: [-74.5, 40], // Default center
+      zoom: 9, // Default zoom
+      pitch: 45, // Added initial pitch for a 3D perspective
+      bearing: -17.6, // Added initial bearing
+      antialias: true, // Improves rendering quality
     });
 
     map.current.on("load", () => {
@@ -27,7 +30,7 @@ const Map = ({ onMapClick, marker, spots }) => {
         tileSize: 512,
         maxzoom: 14,
       });
-      map.current.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
+      map.current.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 }); // Enables 3D terrain
 
       // Add sky layer for a more realistic 3D effect
       map.current.addLayer({
@@ -40,6 +43,29 @@ const Map = ({ onMapClick, marker, spots }) => {
         },
       });
     });
+
+    // Attempt to set map center to user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (map.current) {
+            const { latitude, longitude } = position.coords;
+            map.current.setCenter([longitude, latitude]);
+            map.current.setZoom(13); // Optionally set a closer zoom level
+          }
+        },
+        (error) => {
+          console.warn(
+            "Error getting user location for map default:",
+            error.message
+          );
+          // Map will remain at the default center specified in new mapboxgl.Map()
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    } else {
+      console.warn("Geolocation is not supported by this browser.");
+    }
 
     if (onMapClick) {
       map.current.on("click", (e) => {
@@ -157,22 +183,7 @@ const Map = ({ onMapClick, marker, spots }) => {
         ref={mapContainer}
         className="w-full max-w-4xl h-[300px] sm:h-[400px] md:h-[500px] rounded-lg border border-neutral-300 dark:border-neutral-700 shadow-lg bg-neutral-100 dark:bg-neutral-800"
       />
-      <div className="absolute bottom-4 right-4 bg-white dark:bg-neutral-700 p-3 rounded-md shadow-lg border border-neutral-200 dark:border-neutral-600 text-xs">
-        <h4 className="font-semibold text-neutral-700 dark:text-neutral-200 mb-2 text-sm">
-          Difficulty Legend
-        </h4>
-        {Object.entries(difficultyColors).map(([level, color]) => (
-          <div key={level} className="flex items-center mb-1">
-            <span
-              className="w-3 h-3 rounded-full mr-2 border border-neutral-400 dark:border-neutral-500"
-              style={{ backgroundColor: color }}
-            ></span>
-            <span className="text-neutral-600 dark:text-neutral-300">
-              {level}
-            </span>
-          </div>
-        ))}
-      </div>
+      {/* Difficulty Legend Removed */}
     </div>
   );
 };

@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  NavLink,
+} from "react-router-dom"; // Import NavLink
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import reactLogo from "./assets/react.svg";
@@ -24,21 +30,31 @@ function App() {
   const [count, setCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Define reusable Tailwind classes for navigation links
+  const navLinkClasses =
+    "text-neutral-300 hover:text-white hover:bg-primary transition-colors px-3 py-2 rounded-md text-sm font-medium";
+  const activeNavLinkClasses =
+    "bg-primary text-white px-3 py-2 rounded-md text-sm font-medium";
+  const mobileNavLinkClasses =
+    "block px-3 py-2 rounded-md text-base font-medium text-neutral-300 hover:bg-primary hover:text-white transition-colors";
+  const mobileActiveNavLinkClasses =
+    "block px-3 py-2 rounded-md text-base font-medium bg-primary text-white";
+
   return (
     <Router>
-      <div className="App min-h-screen flex flex-col bg-neutral-100 font-sans">
-        <nav className="bg-primary-dark text-white shadow-md">
+      <div className="App min-h-screen flex flex-col font-sans bg-gradient-to-r from-blue-500 via-green-900 to-white">
+        <nav className="bg-primary-dark text-white shadow-lg">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <Link
               to="/"
-              className="text-2xl font-bold hover:text-primary-light transition-colors"
+              className="text-2xl font-bold text-white hover:text-accent-300 transition-colors duration-150 ease-in-out"
             >
               SlopeScout
             </Link>
             <div className="md:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white focus:outline-none p-2 rounded-md hover:bg-primary-dark focus:bg-primary-dark"
+                className="text-white focus:outline-none p-2 rounded-md hover:bg-primary focus:bg-primary transition-colors duration-150 ease-in-out"
               >
                 <svg
                   className="w-6 h-6"
@@ -66,43 +82,51 @@ function App() {
               </button>
             </div>
             {/* Desktop Menu */}
-            <ul className="hidden md:flex space-x-4 items-center">
+            <ul className="hidden md:flex space-x-2 items-center">
               <li>
-                <Link
+                <NavLink // Changed to NavLink
                   to="/"
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  className={({ isActive }) =>
+                    isActive ? activeNavLinkClasses : navLinkClasses
+                  }
                 >
                   Home
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
+                <NavLink // Changed to NavLink
                   to="/add-spot"
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  className={({ isActive }) =>
+                    isActive ? activeNavLinkClasses : navLinkClasses
+                  }
                 >
                   Add Spot
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
+                <NavLink // Changed to NavLink
                   to="/profile"
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  className={({ isActive }) =>
+                    isActive ? activeNavLinkClasses : navLinkClasses
+                  }
                 >
                   Profile
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
-                  to="/manage-spots" // Link to ManageSpots
-                  className="hover:text-primary-light transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                <NavLink // Changed to NavLink
+                  to="/manage-spots"
+                  className={({ isActive }) =>
+                    isActive ? activeNavLinkClasses : navLinkClasses
+                  }
                 >
                   My Spots
-                </Link>
+                </NavLink>
               </li>
-              <li>
+              <li className="ml-4">
                 <Link
                   to="/login"
-                  className="bg-accent-500 hover:bg-accent-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
                 >
                   Login
                 </Link>
@@ -110,7 +134,7 @@ function App() {
               <li>
                 <Link
                   to="/register"
-                  className="border border-primary-light hover:bg-primary-light hover:text-primary-dark text-primary-light px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="border border-accent-500 text-accent-300 hover:bg-accent-500 hover:text-white px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
                 >
                   Register
                 </Link>
@@ -119,53 +143,69 @@ function App() {
           </div>
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden absolute top-16 inset-x-0 bg-primary-dark p-2 space-y-1 sm:px-3 z-50 shadow-lg">
-              <Link
+            <div className="md:hidden absolute top-16 inset-x-0 bg-primary-dark p-2 space-y-1 sm:px-3 z-50 shadow-xl rounded-b-lg">
+              <NavLink // Changed to NavLink
                 to="/"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                className={({ isActive }) =>
+                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink // Changed to NavLink
                 to="/add-spot"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                className={({ isActive }) =>
+                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Add Spot
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink // Changed to NavLink
                 to="/profile"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+                className={({ isActive }) =>
+                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Profile
-              </Link>
-              <Link
-                to="/manage-spots" // Link to ManageSpots in mobile
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-primary hover:text-white transition-colors"
+              </NavLink>
+              <NavLink // Changed to NavLink
+                to="/manage-spots"
+                className={({ isActive }) =>
+                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 My Spots
-              </Link>
-              <Link
-                to="/login"
-                className="block px-3 py-2 rounded-md text-base font-medium text-white bg-accent-500 hover:bg-accent-600 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="block px-3 py-2 rounded-md text-base font-medium text-primary-light border border-primary-light hover:bg-primary-light hover:text-primary-dark transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Register
-              </Link>
+              </NavLink>
+              <div className="pt-2">
+                <Link
+                  to="/login"
+                  className="block w-full text-center px-3 py-2 rounded-md text-base font-medium text-white bg-accent-500 hover:bg-accent-600 transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Login
+                </Link>
+              </div>
+              <div className="pt-1">
+                <Link
+                  to="/register"
+                  className="block w-full text-center px-3 py-2 rounded-md text-base font-medium text-accent-300 border border-accent-500 hover:bg-accent-500 hover:text-white transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Register
+                </Link>
+              </div>
             </div>
           )}
         </nav>
-        <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
+        <main
+          className={`flex-grow container mx-auto ${
+            isMobileMenuOpen ? "pt-72 px-4 pb-4" : "p-4"
+          }`}
+        >
           <ErrorBoundary>
             <Routes>
               <Route
@@ -200,6 +240,10 @@ function App() {
               <Route path="/spots/:id/edit" element={<EditSpot />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/manage-spots" element={<ManageSpots />} />
+              <Route path="/login" element={<Login />} />{" "}
+              {/* Ensure Login route exists */}
+              <Route path="/register" element={<Register />} />{" "}
+              {/* Ensure Register route exists */}
             </Routes>
           </ErrorBoundary>
         </main>

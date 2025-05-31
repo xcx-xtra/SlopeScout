@@ -4,6 +4,18 @@ import react from "@vitejs/plugin-react";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    // Add server configuration
+    proxy: {
+      // string shorthand: http://localhost:5173/foo -> http://localhost:5173/foo
+      "/api": {
+        target: "http://localhost:3001", // Your backend server address
+        changeOrigin: true,
+        secure: false, // If your backend is not HTTPS
+        // rewrite: (path) => path.replace(/^\/api/, '') // Optional: if you need to remove /api prefix
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {
