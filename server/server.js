@@ -18,4 +18,6 @@ const mainRoutes = require("./routes/index"); // Added for geocoding and other g
 app.use("/api", mainRoutes); // Mount general API routes, including geocoding
 app.use("/api/spots", spotRoutes);
 
-app.listen(3001, () => console.log("Server running on 3001"));
+// app.listen(3001, () => console.log("Server running on 3001")); // Comment out or remove this line
+
+module.exports = app; // Export the app for Vercel

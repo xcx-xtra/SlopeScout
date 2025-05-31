@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react"; // Added useEffect, us
 import supabase from "../../supabaseClient";
 import Map from "../../components/Map"; // Assuming you might want to keep the map for location picking
 import { toast } from "react-toastify";
-import { FiUploadCloud, FiLoader, FiCamera } from "react-icons/fi"; // Added FiCamera, FiUploadCloud might be removed if not used elsewhere after this change
+import { FiUploadCloud, FiLoader } from "react-icons/fi"; // Removed FiCamera, FiUploadCloud might be removed if not used elsewhere after this change
 
 const AddSpot = ({ onAdd }) => {
   const [form, setForm] = useState({
@@ -234,11 +234,13 @@ const AddSpot = ({ onAdd }) => {
         <h2 className="text-xl font-semibold text-neutral-800 text-center mb-6">
           Add New Spot
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {" "}
+          {/* Increased space-y from 5 to 6 for better separation */}
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-neutral-700 mb-1"
+              className="block text-sm font-medium text-neutral-700 mb-1.5" /* Increased mb for label */
             >
               Spot Name
             </label>
@@ -249,21 +251,24 @@ const AddSpot = ({ onAdd }) => {
               value={form.name}
               onChange={handleChange}
               placeholder="e.g., Main Street Hill"
-              className={`w-full p-2.5 border rounded-md shadow-sm text-sm ${
-                errors.name ? "border-red-500" : "border-neutral-300"
-              }`}
+              className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
+                errors.name
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-neutral-300 focus:ring-primary-dark"
+              } focus:outline-none focus:ring-2 focus:ring-opacity-50`} /* Enhanced styling */
             />
             {errors.name && (
-              <p className="text-red-600 text-xs mt-1">{errors.name}</p>
+              <p className="text-red-600 text-xs mt-1.5">
+                {errors.name}
+              </p> /* Increased mt */
             )}
           </div>
-
           <div>
             <label
               htmlFor="location_address"
-              className="block text-sm font-medium text-neutral-700 mb-1"
+              className="block text-sm font-medium text-neutral-700 mb-1.5"
             >
-              Location (Auto-filled)
+              Location (Auto-filled from map click or current location)
             </label>
             <input
               type="text"
@@ -271,78 +276,89 @@ const AddSpot = ({ onAdd }) => {
               id="location_address"
               value={form.location_address}
               readOnly
-              className="w-full p-2.5 border border-neutral-300 rounded-md shadow-sm text-sm bg-neutral-50 text-neutral-600"
-              placeholder="Current Location: 123 Skate Ave, City, State"
+              className="w-full p-3 border border-neutral-300 rounded-lg shadow-sm text-sm bg-neutral-100 text-neutral-700 cursor-not-allowed" /* Enhanced styling */
+              placeholder="Click on the map or allow geolocation"
             />
-            {/* Optional: Display map for refinement if needed, or just rely on auto-fill and manual entry for coords if no map */}
-            <div className="mt-2 h-48 w-full rounded-lg border border-neutral-300 overflow-hidden shadow-sm">
+            <div className="mt-2.5 h-60 w-full rounded-lg border border-neutral-300 overflow-hidden shadow-sm">
+              {" "}
+              {/* Increased map height and mt */}
               <Map
                 onMapClick={handleMapClick}
                 marker={marker}
                 interactive={true}
               />
             </div>
+            {locationLoading && (
+              <div className="flex items-center mt-2 text-sm text-neutral-600">
+                <FiLoader className="animate-spin mr-2" />
+                <span>Fetching address...</span>
+              </div>
+            )}
             {errors.location && (
-              <p className="text-red-600 text-xs mt-1">{errors.location}</p>
+              <p className="text-red-600 text-xs mt-1.5">{errors.location}</p>
             )}
           </div>
-
-          <div>
-            <label
-              htmlFor="slope_gradient"
-              className="block text-sm font-medium text-neutral-700 mb-1"
-            >
-              Slope Gradient (%)
-            </label>
-            <input
-              type="number"
-              name="slope_gradient"
-              id="slope_gradient"
-              value={form.slope_gradient}
-              onChange={handleChange}
-              placeholder="e.g., 10"
-              className={`w-full p-2.5 border rounded-md shadow-sm text-sm ${
-                errors.slope_gradient ? "border-red-500" : "border-neutral-300"
-              }`}
-            />
-            {errors.slope_gradient && (
-              <p className="text-red-600 text-xs mt-1">
-                {errors.slope_gradient}
-              </p>
-            )}
+          {/* Grouping Slope Gradient and Elevation Change */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+            {" "}
+            {/* Added gap-y-6 for consistency */}
+            <div>
+              <label
+                htmlFor="slope_gradient"
+                className="block text-sm font-medium text-neutral-700 mb-1.5"
+              >
+                Slope Gradient (%)
+              </label>
+              <input
+                type="number"
+                name="slope_gradient"
+                id="slope_gradient"
+                value={form.slope_gradient}
+                onChange={handleChange}
+                placeholder="e.g., 15"
+                className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
+                  errors.slope_gradient
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-neutral-300 focus:ring-primary-dark"
+                } focus:outline-none focus:ring-2 focus:ring-opacity-50`}
+              />
+              {errors.slope_gradient && (
+                <p className="text-red-600 text-xs mt-1.5">
+                  {errors.slope_gradient}
+                </p>
+              )}
+            </div>
+            <div>
+              <label
+                htmlFor="elevation_change"
+                className="block text-sm font-medium text-neutral-700 mb-1.5"
+              >
+                Elevation Change (meters)
+              </label>
+              <input
+                type="number"
+                name="elevation_change"
+                id="elevation_change"
+                value={form.elevation_change}
+                onChange={handleChange}
+                placeholder="e.g., 10"
+                className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
+                  errors.elevation_change
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-neutral-300 focus:ring-primary-dark"
+                } focus:outline-none focus:ring-2 focus:ring-opacity-50`}
+              />
+              {errors.elevation_change && (
+                <p className="text-red-600 text-xs mt-1.5">
+                  {errors.elevation_change}
+                </p>
+              )}
+            </div>
           </div>
-
-          <div>
-            <label
-              htmlFor="elevation_change"
-              className="block text-sm font-medium text-neutral-700 mb-1"
-            >
-              Elevation Change (meters)
-            </label>
-            <input
-              type="number"
-              name="elevation_change"
-              id="elevation_change"
-              value={form.elevation_change}
-              onChange={handleChange}
-              placeholder="e.g., 50"
-              className={`w-full p-2.5 border rounded-md shadow-sm text-sm ${
-                errors.elevation_change
-                  ? "border-red-500"
-                  : "border-neutral-300"
-              }`}
-            />
-            {errors.elevation_change && (
-              <p className="text-red-600 text-xs mt-1">
-                {errors.elevation_change}
-              </p>
-            )}
-          </div>
-
           <div>
             <label
               htmlFor="surface_quality"
-              className="block text-sm font-medium text-neutral-700 mb-1"
+              className="block text-sm font-medium text-neutral-700 mb-1.5"
             >
               Surface Quality
             </label>
@@ -351,11 +367,15 @@ const AddSpot = ({ onAdd }) => {
               id="surface_quality"
               value={form.surface_quality}
               onChange={handleChange}
-              className={`w-full p-2.5 border rounded-md shadow-sm text-sm bg-white ${
-                errors.surface_quality ? "border-red-500" : "border-neutral-300"
-              }`}
+              className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
+                errors.surface_quality
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-neutral-300 focus:ring-primary-dark"
+              } focus:outline-none focus:ring-2 focus:ring-opacity-50 appearance-none bg-white`}
             >
-              <option value="">Select surface type</option>
+              <option value="" disabled>
+                Select surface type
+              </option>
               {surfaceTypes.map((type) => (
                 <option key={type} value={type}>
                   {type}
@@ -363,85 +383,52 @@ const AddSpot = ({ onAdd }) => {
               ))}
             </select>
             {errors.surface_quality && (
-              <p className="text-red-600 text-xs mt-1">
+              <p className="text-red-600 text-xs mt-1.5">
                 {errors.surface_quality}
               </p>
             )}
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Photos (Optional)
-            </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 border-dashed rounded-md">
-              <div className="space-y-1 text-center">
-                <FiCamera className="mx-auto h-10 w-10 text-neutral-400" />
-                <div className="flex text-sm text-neutral-600">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      className="sr-only"
-                      multiple
-                      accept="image/*"
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
-                <p className="text-xs text-neutral-500">
-                  PNG, JPG, GIF up to 10MB
-                </p>
-              </div>
-            </div>
-            {/* Actual file handling logic would go here */}
-          </div>
-
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-neutral-700 mb-1"
+              className="block text-sm font-medium text-neutral-700 mb-1.5"
             >
-              Description
+              Description (Optional)
             </label>
             <textarea
               name="description"
               id="description"
-              rows="4"
               value={form.description}
               onChange={handleChange}
-              placeholder="Describe the spot, key features, challenges, etc."
-              className={`w-full p-2.5 border rounded-md shadow-sm text-sm ${
-                errors.description ? "border-red-500" : "border-neutral-300"
-              }`}
-            />
+              rows="4"
+              placeholder="e.g., Long smooth hill with a good runout area. Watch out for a crack mid-way."
+              className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
+                errors.description
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-neutral-300 focus:ring-primary-dark"
+              } focus:outline-none focus:ring-2 focus:ring-opacity-50`}
+            ></textarea>
             {errors.description && (
-              <p className="text-red-600 text-xs mt-1">{errors.description}</p>
+              <p className="text-red-600 text-xs mt-1.5">
+                {errors.description}
+              </p>
             )}
           </div>
-
           {errors.general && (
-            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded-md text-sm">
-              <p>{errors.general}</p>
-            </div>
+            <p className="text-red-600 text-sm text-center">{errors.general}</p>
           )}
-
-          <div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500 disabled:bg-neutral-400"
-            >
-              {isSubmitting ? (
-                <FiLoader className="animate-spin -ml-1 mr-2 h-5 w-5" />
-              ) : null}
-              Submit Spot
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full flex items-center justify-center bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? (
+              <FiLoader className="animate-spin mr-2" />
+            ) : (
+              <FiUploadCloud className="mr-2" />
+            )}
+            {isSubmitting ? "Submitting..." : "Add Spot"}
+          </button>
         </form>
       </div>
     </div>

@@ -42,7 +42,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App min-h-screen flex flex-col bg-neutral-100 dark:bg-neutral-900 font-sans">
+      <div className="App min-h-screen flex flex-col font-sans bg-gradient-to-r from-blue-500 via-green-900 to-white">
         <nav className="bg-primary-dark text-white shadow-lg">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <Link
@@ -201,7 +201,11 @@ function App() {
             </div>
           )}
         </nav>
-        <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
+        <main
+          className={`flex-grow container mx-auto ${
+            isMobileMenuOpen ? "pt-72 px-4 pb-4" : "p-4"
+          }`}
+        >
           <ErrorBoundary>
             <Routes>
               <Route
