@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react"; // Added useState
+import { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -13,36 +13,36 @@ const Map = ({ onMapClick, marker, spots }) => {
 
   useEffect(() => {
     if (map.current) return;
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/satellite-streets-v12", // Changed to satellite streets style
-      center: [-74.5, 40], // Default center
-      zoom: 9, // Default zoom
-      pitch: 45, // Added initial pitch for a 3D perspective
-      bearing: -17.6, // Added initial bearing
-      antialias: true, // Improves rendering quality
-    });
 
-    map.current.on("load", () => {
-      map.current.addSource("mapbox-dem", {
-        type: "raster-dem",
-        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
-        tileSize: 512,
-        maxzoom: 14,
-      });
-      map.current.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 }); // Enables 3D terrain
+    console.log("Initializing Mapbox map...");
+    console.log("Access token available:", !!mapboxgl.accessToken);
+    console.log("Container ref:", mapContainer.current);
 
-      // Add sky layer for a more realistic 3D effect
-      map.current.addLayer({
-        id: "sky",
-        type: "sky",
-        paint: {
-          "sky-type": "atmosphere",
-          "sky-atmosphere-sun": [0.0, 0.0],
-          "sky-atmosphere-sun-intensity": 1,
-        },
+    // Default to San Francisco (popular skateboarding location)
+    const defaultCenter = [-122.4194, 37.7749];
+
+    try {
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: "mapbox://styles/mapbox/streets-v12", // Simplified to basic streets style
+        center: defaultCenter, // Default center
+        zoom: 11, // Default zoom
+        antialias: true, // Improves rendering quality
       });
-    });
+
+      console.log("Map instance created successfully");
+
+      map.current.on("load", () => {
+        console.log("Map loaded successfully");
+        // Simplified - removing 3D terrain for now to isolate issues
+      });
+
+      map.current.on("error", (e) => {
+        console.error("Mapbox error:", e);
+      });
+    } catch (error) {
+      console.error("Error creating map:", error);
+    }
 
     // Attempt to set map center to user's current location
     if (navigator.geolocation) {
@@ -52,19 +52,40 @@ const Map = ({ onMapClick, marker, spots }) => {
             const { latitude, longitude } = position.coords;
             map.current.setCenter([longitude, latitude]);
             map.current.setZoom(13); // Optionally set a closer zoom level
+            console.log("Successfully set map to user location");
           }
         },
         (error) => {
-          console.warn(
-            "Error getting user location for map default:",
-            error.message
+          // More detailed error handling
+          let errorMessage = "Unknown error";
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = "User denied the request for geolocation";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = "Location information is unavailable";
+              break;
+            case error.TIMEOUT:
+              errorMessage = "Location request timed out";
+              break;
+          }
+          console.info(
+            "Geolocation not available, using default map location:",
+            errorMessage
           );
           // Map will remain at the default center specified in new mapboxgl.Map()
+          // This is expected behavior and not an error
         },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        {
+          enableHighAccuracy: false, // Changed to false for better compatibility
+          timeout: 10000, // Increased timeout to 10 seconds
+          maximumAge: 300000, // Cache position for 5 minutes
+        }
       );
     } else {
-      console.warn("Geolocation is not supported by this browser.");
+      console.info(
+        "Geolocation is not supported by this browser, using default location."
+      );
     }
 
     if (onMapClick) {
@@ -170,20 +191,9 @@ const Map = ({ onMapClick, marker, spots }) => {
     }
   }, [spots]); // Runs when spots array changes
 
-  const difficultyColors = {
-    Easy: "#10B981", // Green-500
-    Medium: "#f59e0b", // Amber-500 (theme accent)
-    Hard: "#EF4444", // Red-600
-    Unknown: "#94a3b8", // neutral-400
-  };
-
   return (
-    <div className="relative flex justify-center items-center w-full min-h-[300px] sm:min-h-[400px] md:min-h-[500px] p-4 bg-neutral-100 dark:bg-neutral-800">
-      <div
-        ref={mapContainer}
-        className="w-full max-w-4xl h-[300px] sm:h-[400px] md:h-[500px] rounded-lg border border-neutral-300 dark:border-neutral-700 shadow-lg bg-neutral-100 dark:bg-neutral-800"
-      />
-      {/* Difficulty Legend Removed */}
+    <div className="retro-map-container">
+      <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
     </div>
   );
 };

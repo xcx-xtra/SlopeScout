@@ -1,0 +1,740 @@
+/* SlopeScout Retro Theme - Main Theme File */
+
+/* Note: Google Fonts are loaded in index.html for better performance */
+
+/* Import CSS Custom Properties */
+@import "./variables.css";
+
+/* Import Base Styles */
+@import "./base.css";
+
+/* Import Component Styles */
+@import "./components/buttons.css";
+@import "./components/cards.css";
+@import "./components/forms.css";
+@import "./components/navigation.css";
+@import "./components/spots.css";
+
+/* Import Page Styles */
+@import "./pages/home.css";
+@import "./pages/profile.css";
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* GPU acceleration for animations */
+.retro-gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Contain layout thrashing */
+.retro-contain-layout {
+  contain: layout style paint;
+}
+
+/* Optimize repaints */
+.retro-optimize-paint {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+/* Respect user's reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-primary: #ff8800;
+    --color-secondary: #bb33dd;
+    --color-accent: #00ddff;
+    --color-text: #ffffff;
+    --color-background: #000000;
+  }
+}
+
+/* Enhanced focus indicators for better accessibility */
+.retro-focus-ring:focus,
+.retro-btn:focus,
+.retro-form-input:focus,
+.retro-form-select:focus,
+.retro-form-textarea:focus,
+.retro-nav-link:focus,
+.retro-link:focus {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px var(--color-background), 0 0 10px var(--color-accent);
+}
+
+/* Skip to main content link for screen readers */
+.retro-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-primary);
+  color: var(--color-background);
+  padding: 8px;
+  z-index: 1000;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.retro-skip-link:focus {
+  top: 6px;
+}
+
+/* ===== RETRO ANIMATIONS AND TRANSITIONS ===== */
+
+/* Keyframe animations */
+@keyframes retroSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes retroPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes retroGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--color-accent);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--color-accent), 0 0 30px var(--color-accent);
+  }
+}
+
+@keyframes retroSlideInLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes retroSlideInRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes retroSlideInUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes retroSlideInDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes retroFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes retroBounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes retroZoomIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes retroShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes retroNeonFlicker {
+  0%,
+  100% {
+    text-shadow: 0 0 5px var(--color-accent), 0 0 10px var(--color-accent),
+      0 0 15px var(--color-accent);
+    opacity: 1;
+  }
+  2%,
+  8%,
+  12%,
+  20%,
+  25%,
+  30%,
+  70%,
+  72%,
+  75%,
+  76%,
+  78%,
+  80%,
+  90%,
+  99% {
+    text-shadow: none;
+    opacity: 0.8;
+  }
+}
+
+@keyframes retroBackgroundShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Page transition animations */
+.retro-page-enter {
+  animation: retroSlideInUp 0.6s ease-out;
+}
+
+.retro-page-exit {
+  animation: retroSlideInDown 0.4s ease-in;
+}
+
+/* Loading animations */
+.retro-loading-pulse {
+  animation: retroPulse 2s ease-in-out infinite;
+}
+
+.retro-loading-glow {
+  animation: retroGlow 2s ease-in-out infinite;
+}
+
+.retro-loading-spinner {
+  animation: retroSpin 1s linear infinite;
+}
+
+/* Hover animations */
+.retro-hover-lift:hover {
+  transform: translateY(-4px);
+  transition: var(--transition-normal);
+}
+
+.retro-hover-glow:hover {
+  animation: retroGlow 1s ease-in-out;
+}
+
+.retro-hover-pulse:hover {
+  animation: retroPulse 0.6s ease-in-out;
+}
+
+.retro-hover-shake:hover {
+  animation: retroShake 0.6s ease-in-out;
+}
+
+/* Focus animations */
+.retro-focus-glow:focus {
+  animation: retroGlow 0.3s ease-out;
+}
+
+/* Text animations */
+.retro-text-neon {
+  animation: retroNeonFlicker 3s ease-in-out infinite;
+}
+
+.retro-text-pulse {
+  animation: retroPulse 2s ease-in-out infinite;
+}
+
+/* Background animations */
+.retro-bg-animated {
+  background: linear-gradient(
+    -45deg,
+    var(--color-primary),
+    var(--color-secondary),
+    var(--color-accent),
+    var(--color-primary)
+  );
+  background-size: 400% 400%;
+  animation: retroBackgroundShift 15s ease infinite;
+}
+
+/* ===== ACCESSIBILITY HELPERS ===== */
+
+/* Screen reader only content */
+.retro-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Improved text readability */
+.retro-text-accessible {
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  word-spacing: 2px;
+}
+
+/* ARIA live regions styling */
+.retro-live-region {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Status and alert styling that works with screen readers */
+.retro-status,
+.retro-alert {
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  border: 2px solid;
+}
+
+.retro-status {
+  background-color: rgba(0, 229, 255, 0.1);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.retro-alert {
+  background-color: rgba(255, 107, 53, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Card entrance animations */
+.retro-card-bounce {
+  animation: retroBounceIn 0.8s ease-out;
+}
+
+.retro-card-fade {
+  animation: retroFadeIn 0.6s ease-out;
+}
+
+.retro-card-zoom {
+  animation: retroZoomIn 0.5s ease-out;
+}
+
+/* Staggered animations for lists */
+.retro-stagger-1 {
+  animation-delay: 0.1s;
+}
+.retro-stagger-2 {
+  animation-delay: 0.2s;
+}
+.retro-stagger-3 {
+  animation-delay: 0.3s;
+}
+.retro-stagger-4 {
+  animation-delay: 0.4s;
+}
+.retro-stagger-5 {
+  animation-delay: 0.5s;
+}
+
+/* ===== GLOBAL RETRO THEME OVERRIDES ===== */
+
+/* Ensure smooth transitions are applied globally */
+* {
+  transition: var(--transition-fast);
+}
+
+/* Enhanced focus states for accessibility */
+*:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable hover effects that rely on motion */
+  .retro-hover-lift:hover {
+    transform: none;
+  }
+
+  .retro-hover-glow:hover,
+  .retro-hover-pulse:hover,
+  .retro-hover-shake:hover {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-primary: #ff4500;
+    --color-secondary: #8b00ff;
+    --color-accent: #00bfff;
+    --shadow-retro-sm: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    --shadow-retro-md: 6px 6px 12px rgba(0, 0, 0, 0.5);
+    --shadow-retro-lg: 10px 10px 20px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* Dark mode adjustments (if needed in the future) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-card: #2a2a2a;
+    --color-neutral-100: #1a1a1a;
+    --color-neutral-200: #2f2f2f;
+    --color-neutral-700: #e0e0e0;
+    --color-neutral-900: #f5f5f5;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ENHANCEMENTS ===== */
+
+/* Mobile-first responsive containers */
+.retro-container {
+  width: 100%;
+  max-width: var(--container-xs);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 480px) {
+  .retro-container {
+    max-width: var(--container-sm);
+  }
+}
+
+@media (min-width: 768px) {
+  .retro-container {
+    max-width: var(--container-md);
+    padding: 0 var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .retro-container {
+    max-width: var(--container-lg);
+    padding: 0 var(--space-8);
+  }
+}
+
+@media (min-width: 1200px) {
+  .retro-container {
+    max-width: var(--container-xl);
+  }
+}
+
+@media (min-width: 1440px) {
+  .retro-container {
+    max-width: var(--container-xxl);
+  }
+}
+
+/* Touch-friendly mobile styles */
+@media (max-width: 768px) {
+  /* Increase touch targets */
+  .retro-btn,
+  .retro-nav-link,
+  .retro-mobile-nav-link {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+
+  /* Increase spacing for mobile */
+  .retro-nav-links {
+    gap: var(--touch-spacing-mobile);
+  }
+
+  /* Improve mobile typography */
+  .retro-home-title {
+    font-size: calc(var(--text-4xl) * var(--text-scale-mobile));
+  }
+
+  .retro-spot-title {
+    font-size: calc(var(--text-xl) * var(--text-scale-mobile));
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .retro-home-title {
+    font-size: calc(var(--text-4xl) * var(--text-scale-tablet));
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1024px) {
+  .retro-home-title {
+    font-size: calc(var(--text-4xl) * var(--text-scale-desktop));
+  }
+
+  /* Enhanced hover effects for desktop */
+  .retro-spot-card:hover {
+    transform: translateY(-6px) scale(1.02);
+  }
+
+  .retro-btn:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* Print styles */
+@media print {
+  .retro-nav,
+  .retro-mobile-menu,
+  .retro-btn,
+  .retro-loading-spinner,
+  .retro-bg-animated {
+    display: none !important;
+  }
+
+  .retro-home,
+  .retro-profile-container,
+  .retro-management-container {
+    background: white !important;
+    color: black !important;
+  }
+
+  .retro-spot-card,
+  .retro-auth-card,
+  .retro-profile-section {
+    border: 2px solid black !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove animations and effects for print */
+  * {
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+/* ===== CROSS-BROWSER FALLBACKS AND VENDOR PREFIXES ===== */
+
+/* CSS Custom Property Fallbacks */
+.retro-fallback-primary {
+  background-color: #ff6b35; /* Fallback for var(--color-primary) */
+  background-color: var(--color-primary, #ff6b35);
+}
+
+.retro-fallback-secondary {
+  background-color: #9c27b0; /* Fallback for var(--color-secondary) */
+  background-color: var(--color-secondary, #9c27b0);
+}
+
+.retro-fallback-accent {
+  background-color: #00e5ff; /* Fallback for var(--color-accent) */
+  background-color: var(--color-accent, #00e5ff);
+}
+
+/* Vendor prefixes for transforms and animations */
+.retro-transform-fallback {
+  -webkit-transform: translateY(-4px);
+  -moz-transform: translateY(-4px);
+  -ms-transform: translateY(-4px);
+  transform: translateY(-4px);
+}
+
+.retro-gradient-fallback {
+  background: #ff6b35; /* Fallback solid color */
+  background: -webkit-linear-gradient(45deg, #ff6b35, #9c27b0);
+  background: -moz-linear-gradient(45deg, #ff6b35, #9c27b0);
+  background: linear-gradient(45deg, #ff6b35, #9c27b0);
+}
+
+.retro-box-shadow-fallback {
+  -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.retro-border-radius-fallback {
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
+
+/* Flexbox fallbacks */
+.retro-flex-fallback {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+/* Grid fallbacks for older browsers */
+.retro-grid-fallback {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+}
+
+/* Internet Explorer specific fixes */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .retro-spot-card {
+    display: block;
+    float: left;
+    width: 30%;
+    margin: 1.5%;
+  }
+
+  .retro-spot-grid::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+/* Safari specific fixes */
+@supports (-webkit-appearance: none) {
+  .retro-form-input,
+  .retro-form-select {
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-border-radius: var(--border-radius);
+    border-radius: var(--border-radius);
+  }
+}
+
+/* Font loading fallbacks */
+.retro-font-fallback {
+  font-family: "Orbitron", "Arial Black", "Helvetica", sans-serif;
+}
+
+.retro-body-font-fallback {
+  font-family: "Roboto Condensed", "Arial Narrow", "Helvetica", sans-serif;
+}
+
+.retro-accent-font-fallback {
+  font-family: "Permanent Marker", "Comic Sans MS", "Marker Felt", cursive;
+}
+
+/* Feature detection for modern CSS */
+@supports (display: grid) {
+  .retro-modern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+  }
+}
+
+@supports not (display: grid) {
+  .retro-modern-grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin: calc(var(--spacing-lg) * -0.5);
+  }
+
+  .retro-modern-grid > * {
+    flex: 1 1 300px;
+    margin: calc(var(--spacing-lg) * 0.5);
+  }
+}

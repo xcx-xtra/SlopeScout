@@ -338,3 +338,124 @@
     --shadow-neon-accent: 0 0 15px rgba(var(--color-accent-rgb), 1);
   }
 }
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+:root {
+  /* Breakpoint variables for consistent responsive design */
+  --bp-xs: 320px; /* Extra small devices */
+  --bp-sm: 480px; /* Small devices */
+  --bp-md: 768px; /* Medium devices */
+  --bp-lg: 1024px; /* Large devices */
+  --bp-xl: 1200px; /* Extra large devices */
+  --bp-xxl: 1440px; /* Extra extra large devices */
+
+  /* Container widths */
+  --container-xs: 100%;
+  --container-sm: 460px;
+  --container-md: 748px;
+  --container-lg: 1004px;
+  --container-xl: 1180px;
+  --container-xxl: 1420px;
+
+  /* Responsive font scaling */
+  --text-scale-mobile: 0.875;
+  --text-scale-tablet: 1;
+  --text-scale-desktop: 1.125;
+
+  /* Touch-friendly sizes for mobile */
+  --touch-target-min: 44px;
+  --touch-spacing-mobile: var(--space-6);
+}
+
+/* ===== MOBILE-FIRST RESPONSIVE TYPOGRAPHY ===== */
+
+/* Base mobile typography */
+:root {
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
+  --text-5xl: 3rem; /* 48px */
+}
+
+/* Tablet typography scaling */
+@media (min-width: 768px) {
+  :root {
+    --text-xs: 0.75rem; /* 12px */
+    --text-sm: 0.875rem; /* 14px */
+    --text-base: 1rem; /* 16px */
+    --text-lg: 1.25rem; /* 20px */
+    --text-xl: 1.5rem; /* 24px */
+    --text-2xl: 1.875rem; /* 30px */
+    --text-3xl: 2.25rem; /* 36px */
+    --text-4xl: 3rem; /* 48px */
+    --text-5xl: 3.75rem; /* 60px */
+  }
+}
+
+/* Desktop typography scaling */
+@media (min-width: 1024px) {
+  :root {
+    --text-xs: 0.75rem; /* 12px */
+    --text-sm: 0.875rem; /* 14px */
+    --text-base: 1.125rem; /* 18px */
+    --text-lg: 1.375rem; /* 22px */
+    --text-xl: 1.75rem; /* 28px */
+    --text-2xl: 2.25rem; /* 36px */
+    --text-3xl: 3rem; /* 48px */
+    --text-4xl: 3.75rem; /* 60px */
+    --text-5xl: 4.5rem; /* 72px */
+  }
+}
+
+/* ===== RESPONSIVE SPACING ===== */
+
+/* Mobile spacing */
+:root {
+  --space-mobile-1: 0.25rem; /* 4px */
+  --space-mobile-2: 0.5rem; /* 8px */
+  --space-mobile-3: 0.75rem; /* 12px */
+  --space-mobile-4: 1rem; /* 16px */
+  --space-mobile-6: 1.5rem; /* 24px */
+  --space-mobile-8: 2rem; /* 32px */
+  --space-mobile-12: 3rem; /* 48px */
+  --space-mobile-16: 4rem; /* 64px */
+}
+
+/* Tablet spacing */
+@media (min-width: 768px) {
+  :root {
+    --space-tablet-1: 0.25rem; /* 4px */
+    --space-tablet-2: 0.5rem; /* 8px */
+    --space-tablet-3: 0.75rem; /* 12px */
+    --space-tablet-4: 1rem; /* 16px */
+    --space-tablet-6: 1.5rem; /* 24px */
+    --space-tablet-8: 2rem; /* 32px */
+    --space-tablet-12: 3rem; /* 48px */
+    --space-tablet-16: 4rem; /* 64px */
+    --space-tablet-20: 5rem; /* 80px */
+    --space-tablet-24: 6rem; /* 96px */
+  }
+}
+
+/* Desktop spacing */
+@media (min-width: 1024px) {
+  :root {
+    --space-desktop-1: 0.25rem; /* 4px */
+    --space-desktop-2: 0.5rem; /* 8px */
+    --space-desktop-3: 0.75rem; /* 12px */
+    --space-desktop-4: 1rem; /* 16px */
+    --space-desktop-6: 1.5rem; /* 24px */
+    --space-desktop-8: 2rem; /* 32px */
+    --space-desktop-12: 3rem; /* 48px */
+    --space-desktop-16: 4rem; /* 64px */
+    --space-desktop-20: 5rem; /* 80px */
+    --space-desktop-24: 6rem; /* 96px */
+    --space-desktop-32: 8rem; /* 128px */
+  }
+}

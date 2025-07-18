@@ -36,64 +36,98 @@ const SpotPage = () => {
     }
   }, [spotId]);
 
-  if (loading) return <LoadingSpinner />;
-  if (error)
+  if (loading)
     return (
-      <div className="text-red-500 text-center p-4">
-        Error loading spot: {error}
+      <div className="retro-loading-container">
+        <div className="retro-loading-spinner"></div>
+        <p className="retro-loading-text">Loading spot...</p>
       </div>
     );
-  if (!spot) return <div className="text-center p-4">Spot not found.</div>;
+
+  if (error)
+    return (
+      <div className="retro-spot-page">
+        <div className="retro-empty-state">
+          <div className="retro-empty-icon">⚠️</div>
+          <h3 className="retro-empty-title">Error</h3>
+          <p className="retro-empty-text">Error loading spot: {error}</p>
+        </div>
+      </div>
+    );
+
+  if (!spot)
+    return (
+      <div className="retro-spot-page">
+        <div className="retro-empty-state">
+          <div className="retro-empty-icon">🛹</div>
+          <h3 className="retro-empty-title">Not Found</h3>
+          <p className="retro-empty-text">Spot not found.</p>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="container mx-auto p-4 antialiased">
-      <Link
-        to="/spots"
-        className="text-blue-600 hover:text-blue-800 visited:text-purple-600 hover:underline mb-6 inline-block transition duration-150 ease-in-out"
-      >
-        &larr; Back to All Spots
+    <div className="retro-spot-page">
+      <Link to="/spots" className="retro-back-link">
+        ← Back to All Spots
       </Link>
-      <article className="bg-white shadow-xl rounded-lg overflow-hidden">
+      <article className="retro-spot-detail">
         {spot.image_url && (
           <img
             src={spot.image_url}
             alt={`Image of ${spot.name}`}
-            className="w-full h-72 object-cover"
+            className="retro-spot-detail-image"
           />
         )}
-        <div className="p-6 md:p-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-3">{spot.name}</h1>
-          <p className="text-gray-600 text-lg mb-6">{spot.description}</p>
+        <div className="retro-spot-detail-content">
+          <h1 className="retro-spot-detail-title">{spot.name}</h1>
+          <p className="retro-spot-detail-description">{spot.description}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
-                Details
-              </h2>
-              <ul className="space-y-2 text-gray-600">
-                <li>
-                  <span className="font-medium">Difficulty:</span>{" "}
-                  {spot.difficulty || "N/A"}
+          <div className="retro-spot-detail-grid">
+            <div className="retro-spot-detail-section">
+              <h2 className="retro-spot-detail-section-title">Details</h2>
+              <ul className="retro-spot-detail-list">
+                <li className="retro-spot-detail-item">
+                  <span className="retro-spot-label">Difficulty:</span>{" "}
+                  <span
+                    className={`retro-difficulty-indicator ${
+                      spot.difficulty === "Easy"
+                        ? "retro-difficulty-easy"
+                        : spot.difficulty === "Medium"
+                        ? "retro-difficulty-medium"
+                        : spot.difficulty === "Hard"
+                        ? "retro-difficulty-hard"
+                        : "retro-difficulty-unknown"
+                    }`}
+                  >
+                    {spot.difficulty || "N/A"}
+                  </span>
                 </li>
-                <li>
-                  <span className="font-medium">Elevation Gain:</span>{" "}
+                <li className="retro-spot-detail-item">
+                  <span className="retro-spot-label">Elevation Gain:</span>{" "}
                   {spot.elevation_gain ? `${spot.elevation_gain}m` : "N/A"}
                 </li>
                 {spot.location_address && (
-                  <li>
-                    <span className="font-medium">Address:</span>{" "}
+                  <li className="retro-spot-detail-item">
+                    <span className="retro-spot-label">Address:</span>{" "}
                     {spot.location_address}
                   </li>
                 )}
               </ul>
             </div>
             {spot.location && (
-              <div>
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <div className="retro-spot-detail-section">
+                <h2 className="retro-spot-detail-section-title">
                   Location Coordinates
                 </h2>
-                <p className="text-gray-600">Latitude: {spot.location.lat}</p>
-                <p className="text-gray-600">Longitude: {spot.location.lng}</p>
+                <p className="retro-spot-detail-item">
+                  <span className="retro-spot-label">Latitude:</span>{" "}
+                  {spot.location.lat}
+                </p>
+                <p className="retro-spot-detail-item">
+                  <span className="retro-spot-label">Longitude:</span>{" "}
+                  {spot.location.lng}
+                </p>
                 {/* 
                   Future enhancement: Integrate Map component
                   <div className="mt-4 h-64 rounded-md overflow-hidden">
@@ -104,8 +138,8 @@ const SpotPage = () => {
             )}
           </div>
 
-          <div className="text-sm text-gray-500 border-t pt-4 mt-6">
-            <p>
+          <div className="retro-spot-detail-footer">
+            <p className="retro-spot-detail-date">
               Spot added on:{" "}
               {new Date(spot.created_at).toLocaleDateString("en-US", {
                 year: "numeric",

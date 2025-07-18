@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react"; // Added useEffect, useCallback
+import { useState, useEffect, useCallback } from "react";
 import supabase from "../../supabaseClient";
-import Map from "../../components/Map"; // Assuming you might want to keep the map for location picking
+import Map from "../../components/Map";
 import { toast } from "react-toastify";
-import { FiUploadCloud, FiLoader } from "react-icons/fi"; // Removed FiCamera, FiUploadCloud might be removed if not used elsewhere after this change
+import { FiLoader } from "react-icons/fi";
 
 const AddSpot = ({ onAdd }) => {
   const [form, setForm] = useState({
@@ -229,19 +229,12 @@ const AddSpot = ({ onAdd }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-white py-8 px-4 font-sans">
-      <div className="max-w-lg mx-auto">
-        <h2 className="text-xl font-semibold text-neutral-800 text-center mb-6">
-          Add New Spot
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {" "}
-          {/* Increased space-y from 5 to 6 for better separation */}
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-neutral-700 mb-1.5" /* Increased mb for label */
-            >
+    <div className="retro-add-spot">
+      <div className="retro-add-spot-container">
+        <h2 className="retro-add-spot-title">Add New Spot</h2>
+        <form onSubmit={handleSubmit} className="retro-add-spot-form">
+          <div className="retro-form-group">
+            <label htmlFor="name" className="retro-form-label">
               Spot Name
             </label>
             <input
@@ -251,23 +244,14 @@ const AddSpot = ({ onAdd }) => {
               value={form.name}
               onChange={handleChange}
               placeholder="e.g., Main Street Hill"
-              className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
-                errors.name
-                  ? "border-red-500 focus:ring-red-500"
-                  : "border-neutral-300 focus:ring-primary-dark"
-              } focus:outline-none focus:ring-2 focus:ring-opacity-50`} /* Enhanced styling */
+              className={`retro-form-input ${
+                errors.name ? "retro-form-input-error" : ""
+              }`}
             />
-            {errors.name && (
-              <p className="text-red-600 text-xs mt-1.5">
-                {errors.name}
-              </p> /* Increased mt */
-            )}
+            {errors.name && <p className="retro-form-error">{errors.name}</p>}
           </div>
-          <div>
-            <label
-              htmlFor="location_address"
-              className="block text-sm font-medium text-neutral-700 mb-1.5"
-            >
+          <div className="retro-form-group">
+            <label htmlFor="location_address" className="retro-form-label">
               Location (Auto-filled from map click or current location)
             </label>
             <input
@@ -276,12 +260,10 @@ const AddSpot = ({ onAdd }) => {
               id="location_address"
               value={form.location_address}
               readOnly
-              className="w-full p-3 border border-neutral-300 rounded-lg shadow-sm text-sm bg-neutral-100 text-neutral-700 cursor-not-allowed" /* Enhanced styling */
+              className="retro-form-input retro-form-input-readonly"
               placeholder="Click on the map or allow geolocation"
             />
-            <div className="mt-2.5 h-60 w-full rounded-lg border border-neutral-300 overflow-hidden shadow-sm">
-              {" "}
-              {/* Increased map height and mt */}
+            <div className="retro-map-container">
               <Map
                 onMapClick={handleMapClick}
                 marker={marker}
@@ -289,24 +271,21 @@ const AddSpot = ({ onAdd }) => {
               />
             </div>
             {locationLoading && (
-              <div className="flex items-center mt-2 text-sm text-neutral-600">
-                <FiLoader className="animate-spin mr-2" />
+              <div className="retro-loading-inline">
+                <FiLoader className="retro-loading-icon" />
                 <span>Fetching address...</span>
               </div>
             )}
             {errors.location && (
-              <p className="text-red-600 text-xs mt-1.5">{errors.location}</p>
+              <p className="retro-form-error">{errors.location}</p>
             )}
           </div>
           {/* Grouping Slope Gradient and Elevation Change */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+          <div className="retro-form-grid">
             {" "}
             {/* Added gap-y-6 for consistency */}
-            <div>
-              <label
-                htmlFor="slope_gradient"
-                className="block text-sm font-medium text-neutral-700 mb-1.5"
-              >
+            <div className="retro-form-group">
+              <label htmlFor="slope_gradient" className="retro-form-label">
                 Slope Gradient (%)
               </label>
               <input
@@ -316,23 +295,16 @@ const AddSpot = ({ onAdd }) => {
                 value={form.slope_gradient}
                 onChange={handleChange}
                 placeholder="e.g., 15"
-                className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
-                  errors.slope_gradient
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-neutral-300 focus:ring-primary-dark"
-                } focus:outline-none focus:ring-2 focus:ring-opacity-50`}
+                className={`retro-form-input ${
+                  errors.slope_gradient ? "retro-form-input-error" : ""
+                }`}
               />
               {errors.slope_gradient && (
-                <p className="text-red-600 text-xs mt-1.5">
-                  {errors.slope_gradient}
-                </p>
+                <p className="retro-form-error">{errors.slope_gradient}</p>
               )}
             </div>
-            <div>
-              <label
-                htmlFor="elevation_change"
-                className="block text-sm font-medium text-neutral-700 mb-1.5"
-              >
+            <div className="retro-form-group">
+              <label htmlFor="elevation_change" className="retro-form-label">
                 Elevation Change (meters)
               </label>
               <input
@@ -342,24 +314,17 @@ const AddSpot = ({ onAdd }) => {
                 value={form.elevation_change}
                 onChange={handleChange}
                 placeholder="e.g., 10"
-                className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
-                  errors.elevation_change
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-neutral-300 focus:ring-primary-dark"
-                } focus:outline-none focus:ring-2 focus:ring-opacity-50`}
+                className={`retro-form-input ${
+                  errors.elevation_change ? "retro-form-input-error" : ""
+                }`}
               />
               {errors.elevation_change && (
-                <p className="text-red-600 text-xs mt-1.5">
-                  {errors.elevation_change}
-                </p>
+                <p className="retro-form-error">{errors.elevation_change}</p>
               )}
             </div>
           </div>
-          <div>
-            <label
-              htmlFor="surface_quality"
-              className="block text-sm font-medium text-neutral-700 mb-1.5"
-            >
+          <div className="retro-form-group">
+            <label htmlFor="surface_quality" className="retro-form-label">
               Surface Quality
             </label>
             <select
@@ -367,11 +332,9 @@ const AddSpot = ({ onAdd }) => {
               id="surface_quality"
               value={form.surface_quality}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
-                errors.surface_quality
-                  ? "border-red-500 focus:ring-red-500"
-                  : "border-neutral-300 focus:ring-primary-dark"
-              } focus:outline-none focus:ring-2 focus:ring-opacity-50 appearance-none bg-white`}
+              className={`retro-form-select ${
+                errors.surface_quality ? "retro-form-input-error" : ""
+              }`}
             >
               <option value="" disabled>
                 Select surface type
@@ -383,16 +346,11 @@ const AddSpot = ({ onAdd }) => {
               ))}
             </select>
             {errors.surface_quality && (
-              <p className="text-red-600 text-xs mt-1.5">
-                {errors.surface_quality}
-              </p>
+              <p className="retro-form-error">{errors.surface_quality}</p>
             )}
           </div>
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-neutral-700 mb-1.5"
-            >
+          <div className="retro-form-group">
+            <label htmlFor="description" className="retro-form-label">
               Description (Optional)
             </label>
             <textarea
@@ -402,30 +360,28 @@ const AddSpot = ({ onAdd }) => {
               onChange={handleChange}
               rows="4"
               placeholder="e.g., Long smooth hill with a good runout area. Watch out for a crack mid-way."
-              className={`w-full p-3 border rounded-lg shadow-sm text-sm ${
-                errors.description
-                  ? "border-red-500 focus:ring-red-500"
-                  : "border-neutral-300 focus:ring-primary-dark"
-              } focus:outline-none focus:ring-2 focus:ring-opacity-50`}
+              className={`retro-form-textarea ${
+                errors.description ? "retro-form-input-error" : ""
+              }`}
             ></textarea>
             {errors.description && (
-              <p className="text-red-600 text-xs mt-1.5">
-                {errors.description}
-              </p>
+              <p className="retro-form-error">{errors.description}</p>
             )}
           </div>
           {errors.general && (
-            <p className="text-red-600 text-sm text-center">{errors.general}</p>
+            <p className="retro-form-error retro-form-error-center">
+              {errors.general}
+            </p>
           )}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full flex items-center justify-center bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="retro-btn retro-btn-primary retro-btn-submit"
           >
             {isSubmitting ? (
-              <FiLoader className="animate-spin mr-2" />
+              <div className="retro-loading-spinner retro-loading-inline"></div>
             ) : (
-              <FiUploadCloud className="mr-2" />
+              <span className="retro-icon">🚀</span>
             )}
             {isSubmitting ? "Submitting..." : "Add Spot"}
           </button>

@@ -9,9 +9,6 @@ import {
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import "./styles/variables.css";
-import "./styles/components/navigation.css";
-import "./styles/pages/home.css";
 import Map from "./components/Map";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -25,10 +22,14 @@ function App() {
 
   return (
     <Router>
-      <div className="retro-app">
-        <nav className="retro-nav">
+      <div className="retro-app retro-gpu-accelerated">
+        <nav
+          className="retro-nav retro-contain-layout"
+          role="navigation"
+          aria-label="Main navigation"
+        >
           <div className="retro-nav-container">
-            <Link to="/" className="retro-logo">
+            <Link to="/" className="retro-logo" aria-label="SlopeScout - Home">
               SlopeScout
             </Link>
             <button
@@ -36,6 +37,9 @@ function App() {
               className={`retro-mobile-menu-btn ${
                 isMobileMenuOpen ? "open" : ""
               }`}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               <svg
                 fill="none"
@@ -116,7 +120,10 @@ function App() {
           </div>
           {/* Mobile Menu */}
           <div
+            id="mobile-menu"
             className={`retro-mobile-menu ${isMobileMenuOpen ? "open" : ""}`}
+            role="menu"
+            aria-hidden={!isMobileMenuOpen}
           >
             <div className="retro-mobile-nav-links">
               <NavLink
@@ -175,7 +182,9 @@ function App() {
           </div>
         </nav>
         <main
+          id="main-content"
           className={`retro-main ${isMobileMenuOpen ? "mobile-menu-open" : ""}`}
+          role="main"
         >
           <ErrorBoundary>
             <Routes>

@@ -1,0 +1,589 @@
+/* SlopeScout Retro Profile Page Styling */
+
+/* ===== PROFILE PAGE CONTAINER ===== */
+
+.retro-profile-container {
+  min-height: calc(100vh - var(--nav-height));
+  background: var(--gradient-background);
+  padding: var(--space-6);
+}
+
+.retro-profile-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-8);
+}
+
+/* ===== PROFILE HEADER CARD ===== */
+
+.retro-profile-header {
+  background: var(--color-bg-card);
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-retro-lg);
+  padding: var(--space-8);
+  position: relative;
+  overflow: hidden;
+  height: fit-content;
+}
+
+.retro-profile-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-accent);
+}
+
+.retro-profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--color-accent);
+  box-shadow: var(--shadow-retro-md);
+  margin: 0 auto var(--space-6) auto;
+  display: block;
+  object-fit: cover;
+}
+
+.retro-profile-name {
+  font-family: var(--font-primary);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 0 0 var(--space-2) 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.retro-profile-email {
+  font-family: var(--font-secondary);
+  font-size: var(--text-base);
+  color: var(--color-neutral-700);
+  text-align: center;
+  margin: 0 0 var(--space-6) 0;
+}
+
+.retro-profile-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.retro-stat-item {
+  text-align: center;
+  padding: var(--space-4);
+  background: rgba(255, 107, 53, 0.1);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+}
+
+.retro-stat-number {
+  font-family: var(--font-primary);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.retro-stat-label {
+  font-family: var(--font-secondary);
+  font-size: var(--text-sm);
+  color: var(--color-neutral-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.retro-profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.retro-profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid;
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  text-align: center;
+  transition: var(--transition-normal);
+  cursor: pointer;
+}
+
+.retro-profile-btn-primary {
+  background: var(--gradient-primary);
+  border-color: var(--color-accent);
+  color: var(--color-neutral-100);
+}
+
+.retro-profile-btn-primary:hover {
+  box-shadow: var(--shadow-neon);
+  transform: translateY(-2px);
+}
+
+.retro-profile-btn-secondary {
+  background: transparent;
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.retro-profile-btn-secondary:hover {
+  background: var(--color-secondary);
+  color: var(--color-neutral-100);
+}
+
+.retro-profile-btn-danger {
+  background: transparent;
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.retro-profile-btn-danger:hover {
+  background: #e74c3c;
+  color: var(--color-neutral-100);
+  box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+/* ===== PROFILE MAIN CONTENT ===== */
+
+.retro-profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.retro-profile-section {
+  background: var(--color-bg-card);
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-retro-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.retro-profile-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-accent);
+}
+
+.retro-section-header {
+  padding: var(--space-6);
+  border-bottom: 2px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  gap: var(--space-3);
+}
+
+.retro-section-title {
+  font-family: var(--font-primary);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+  flex: 1;
+}
+
+.retro-section-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-accent);
+}
+
+.retro-section-content {
+  padding: var(--space-6);
+}
+
+/* ===== FAVORITE SPOTS GRID ===== */
+
+.retro-favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.retro-favorite-spot {
+  background: rgba(156, 39, 176, 0.1);
+  border: 2px solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  transition: var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.retro-favorite-spot:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-retro-md);
+  border-color: var(--color-accent);
+}
+
+.retro-favorite-spot-name {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  margin: 0 0 var(--space-2) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.retro-favorite-spot-location {
+  font-family: var(--font-secondary);
+  font-size: var(--text-sm);
+  color: var(--color-neutral-700);
+  margin: 0 0 var(--space-3) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.retro-favorite-spot-difficulty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ===== RIDE HISTORY ===== */
+
+.retro-ride-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.retro-ride-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: rgba(0, 229, 255, 0.1);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.retro-ride-item:hover {
+  background: rgba(0, 229, 255, 0.2);
+  transform: translateX(4px);
+}
+
+.retro-ride-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--gradient-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-neutral-100);
+  flex-shrink: 0;
+}
+
+.retro-ride-details {
+  flex: 1;
+}
+
+.retro-ride-spot {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+  margin: 0 0 var(--space-1) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.retro-ride-meta {
+  font-family: var(--font-secondary);
+  font-size: var(--text-sm);
+  color: var(--color-neutral-700);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.retro-ride-date,
+.retro-ride-duration {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ===== MANAGEMENT PAGE STYLES ===== */
+
+.retro-management-container {
+  min-height: calc(100vh - var(--nav-height));
+  background: var(--gradient-background);
+  padding: var(--space-6);
+}
+
+.retro-management-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.retro-management-title {
+  font-family: var(--font-primary);
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.retro-management-subtitle {
+  font-family: var(--font-secondary);
+  font-size: var(--text-lg);
+  color: var(--color-neutral-700);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.retro-management-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.retro-spot-management-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.retro-management-spot-card {
+  background: var(--color-bg-card);
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-retro-lg);
+  overflow: hidden;
+  position: relative;
+  transition: var(--transition-normal);
+}
+
+.retro-management-spot-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-neon);
+}
+
+.retro-management-spot-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-accent);
+}
+
+.retro-management-actions {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-top: 2px solid var(--color-primary);
+  background: rgba(255, 107, 53, 0.05);
+}
+
+.retro-management-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  text-align: center;
+  transition: var(--transition-normal);
+  cursor: pointer;
+}
+
+.retro-management-btn-edit {
+  background: transparent;
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.retro-management-btn-edit:hover {
+  background: var(--color-secondary);
+  color: var(--color-neutral-100);
+}
+
+.retro-management-btn-delete {
+  background: transparent;
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.retro-management-btn-delete:hover {
+  background: #e74c3c;
+  color: var(--color-neutral-100);
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+}
+
+.retro-management-btn-view {
+  background: transparent;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.retro-management-btn-view:hover {
+  background: var(--color-accent);
+  color: var(--color-neutral-100);
+}
+
+/* ===== EMPTY STATES ===== */
+
+.retro-empty-state {
+  text-align: center;
+  padding: var(--space-16);
+  background: var(--color-bg-card);
+  border: 3px dashed var(--color-primary);
+  border-radius: var(--radius-lg);
+  margin: var(--space-8) 0;
+}
+
+.retro-empty-icon {
+  font-size: 4rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+}
+
+.retro-empty-title {
+  font-family: var(--font-primary);
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  margin: 0 0 var(--space-3) 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.retro-empty-text {
+  font-family: var(--font-secondary);
+  font-size: var(--text-base);
+  color: var(--color-neutral-700);
+  margin: 0 0 var(--space-6) 0;
+  line-height: 1.6;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 1024px) {
+  .retro-profile-content {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .retro-profile-header {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .retro-profile-container,
+  .retro-management-container {
+    padding: var(--space-4);
+  }
+
+  .retro-profile-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .retro-favorites-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .retro-spot-management-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .retro-management-title {
+    font-size: var(--text-3xl);
+  }
+
+  .retro-management-actions {
+    flex-direction: column;
+  }
+
+  .retro-ride-item {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-3);
+  }
+
+  .retro-ride-meta {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .retro-profile-container,
+  .retro-management-container {
+    padding: var(--space-2);
+  }
+
+  .retro-profile-header,
+  .retro-profile-section {
+    padding: var(--space-4);
+  }
+
+  .retro-section-header {
+    padding: var(--space-4);
+  }
+
+  .retro-section-content {
+    padding: var(--space-4);
+  }
+
+  .retro-management-title {
+    font-size: var(--text-2xl);
+  }
+
+  .retro-management-actions {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .retro-management-btn {
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+  }
+}

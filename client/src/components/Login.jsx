@@ -50,89 +50,76 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-xs w-full space-y-8">
-        {" "}
-        {/* Adjusted max-w-xs for a narrower form like the wireframe */}
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-neutral-800">Login</h2>{" "}
-          {/* Adjusted text size */}
+    <div className="retro-auth-container">
+      <div className="retro-auth-card">
+        <div className="retro-auth-header">
+          <h2 className="retro-auth-title">Login</h2>
+          <p className="retro-auth-subtitle">Welcome back, skater!</p>
         </div>
-        <form onSubmit={handleLogin} className="mt-8 space-y-6">
+        <form onSubmit={handleLogin} className="retro-auth-form">
           <input type="hidden" name="remember" defaultValue="true" />
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email-address" className="sr-only">
-                {" "}
-                {/* Label made screen-reader only as per wireframe */}
-                Email
-              </label>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-neutral-300 placeholder-neutral-500 text-neutral-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                {" "}
-                {/* Label made screen-reader only */}
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-neutral-300 placeholder-neutral-500 text-neutral-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+          <div className="retro-form-group">
+            <label htmlFor="email-address" className="retro-form-label">
+              Email
+            </label>
+            <input
+              id="email-address"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              className="retro-form-input"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="retro-form-group">
+            <label htmlFor="password" className="retro-form-label">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              className="retro-form-input"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white transition-colors duration-150 ease-in-out ${
-                loading
-                  ? "bg-neutral-400 cursor-not-allowed"
-                  : "bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
-              }`}
-            >
-              {loading ? (
-                <FiLoader className="animate-spin h-5 w-5 text-white" />
-              ) : (
-                "Login"
-              )}
-            </button>
-          </div>
-          <div className="text-sm text-center">
-            <Link
-              to="/forgot-password" // Assuming you will create this route
-              className="font-medium text-neutral-600 hover:text-neutral-500"
-            >
+          <button
+            type="submit"
+            disabled={loading}
+            className={`retro-btn-auth ${loading ? "loading" : ""}`}
+          >
+            {loading ? (
+              <FiLoader className="retro-loading-icon" />
+            ) : (
+              <>
+                <FiLogIn className="retro-btn-icon" />
+                Login
+              </>
+            )}
+          </button>
+
+          <div className="retro-auth-links">
+            <Link to="/forgot-password" className="retro-auth-link">
               Forgot Password?
             </Link>
           </div>
         </form>
-        <div className="mt-6">
-          <Link
-            to="/register"
-            className="group relative w-full flex justify-center py-3 px-4 border border-neutral-300 text-sm font-medium rounded-md text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-            Sign Up
-          </Link>
+
+        <div className="retro-auth-divider">
+          <span>Don't have an account?</span>
         </div>
+
+        <Link to="/register" className="retro-btn-secondary">
+          Sign Up
+        </Link>
       </div>
     </div>
   );

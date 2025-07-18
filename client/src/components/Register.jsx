@@ -57,103 +57,92 @@ const Register = ({ onRegister }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-100 dark:bg-neutral-900 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-primary-700 dark:text-primary-300 font-serif">
-            Create your SlopeScout Account
-          </h2>
+    <div className="retro-auth-container">
+      <div className="retro-auth-card">
+        <div className="retro-auth-header">
+          <h2 className="retro-auth-title">Join the Crew</h2>
+          <p className="retro-auth-subtitle">Create your SlopeScout account</p>
         </div>
-        <form
-          onSubmit={handleRegister}
-          className="mt-8 space-y-6 bg-white dark:bg-neutral-800 p-8 shadow-2xl rounded-lg"
-        >
+        <form onSubmit={handleRegister} className="retro-auth-form">
           <input type="hidden" name="remember" defaultValue="true" />
-          <div className="rounded-md shadow-sm">
-            <div>
-              <label htmlFor="email-address-register" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email-address-register"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 placeholder-neutral-500 dark:placeholder-neutral-400 text-neutral-900 dark:text-neutral-100 rounded-t-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-400 dark:focus:border-primary-400 focus:z-10 sm:text-sm dark:bg-neutral-700"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="-mt-px">
-              {" "}
-              {/* Adjusted for better border overlap */}
-              <label htmlFor="password-register" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password-register"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 placeholder-neutral-500 dark:placeholder-neutral-400 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-400 dark:focus:border-primary-400 focus:z-10 sm:text-sm dark:bg-neutral-700"
-                placeholder="Password (min. 6 characters)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="-mt-px">
-              {" "}
-              {/* Adjusted for better border overlap */}
-              <label htmlFor="confirm-password-register" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirm-password-register"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 placeholder-neutral-500 dark:placeholder-neutral-400 text-neutral-900 dark:text-neutral-100 rounded-b-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-400 dark:focus:border-primary-400 focus:z-10 sm:text-sm dark:bg-neutral-700"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
+          <div className="retro-form-group">
+            <label
+              htmlFor="email-address-register"
+              className="retro-form-label"
+            >
+              Email Address
+            </label>
+            <input
+              id="email-address-register"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              className="retro-form-input"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="retro-form-group">
+            <label htmlFor="password-register" className="retro-form-label">
+              Password
+            </label>
+            <input
+              id="password-register"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              className="retro-form-input"
+              placeholder="Password (min. 6 characters)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="retro-form-group">
+            <label
+              htmlFor="confirm-password-register"
+              className="retro-form-label"
+            >
+              Confirm Password
+            </label>
+            <input
+              id="confirm-password-register"
+              name="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              required
+              className="retro-form-input"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={`group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white transition-colors duration-150 ease-in-out ${
-                loading
-                  ? "bg-accent-400 dark:bg-accent-500 cursor-not-allowed"
-                  : "bg-accent-500 hover:bg-accent-600 dark:bg-accent-600 dark:hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 dark:focus:ring-offset-neutral-900 focus:ring-accent-500 dark:focus:ring-accent-400"
-              }`}
-            >
-              {loading ? (
-                <FiLoader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-              ) : (
-                <FiUserPlus className="-ml-1 mr-3 h-5 w-5 text-white" />
-              )}
-              {loading ? "Creating account..." : "Create account"}
-            </button>
-          </div>
-          <div className="text-sm text-center">
-            <p className="text-neutral-600 dark:text-neutral-400">
-              Already have an account?{" "}
-              <a
-                href="/login" // Assuming you have a route for login
-                className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
-              >
-                Sign in
-              </a>
-            </p>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`retro-btn-auth ${loading ? "loading" : ""}`}
+          >
+            {loading ? (
+              <FiLoader className="retro-loading-icon" />
+            ) : (
+              <>
+                <FiUserPlus className="retro-btn-icon" />
+                Create Account
+              </>
+            )}
+          </button>
         </form>
+
+        <div className="retro-auth-divider">
+          <span>Already have an account?</span>
+        </div>
+
+        <a href="/login" className="retro-btn-secondary">
+          Sign In
+        </a>
       </div>
     </div>
   );
