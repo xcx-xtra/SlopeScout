@@ -1,0 +1,378 @@
+/* SlopeScout Retro Home Page Styling */
+
+/* ===== HOME PAGE CONTAINER ===== */
+
+.retro-home {
+  min-height: calc(100vh - var(--nav-height));
+  background: var(--gradient-background);
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add subtle retro background pattern */
+.retro-home::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      circle at 25% 25%,
+      rgba(255, 107, 53, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(156, 39, 176, 0.1) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.retro-home > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== WELCOME HEADING WITH NEON EFFECTS ===== */
+
+.retro-home-title {
+  font-family: var(--font-primary);
+  font-size: var(--text-5xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  line-height: var(--line-height-tight);
+  margin: 0;
+
+  /* Retro text shadow */
+  text-shadow: var(--text-shadow-retro);
+
+  /* Neon glow effect */
+  filter: drop-shadow(var(--shadow-neon-primary));
+
+  /* Gradient text effect */
+  background: var(--gradient-retro-sunset);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+
+  /* Subtle animation */
+  animation: retro-glow 3s ease-in-out infinite alternate,
+    gradient-shift 8s ease-in-out infinite;
+
+  transition: var(--transition-retro);
+}
+
+.retro-home-title:hover {
+  transform: var(--transform-hover-scale);
+  filter: drop-shadow(var(--shadow-neon-intense));
+}
+
+/* ===== SUBTITLE STYLING ===== */
+
+.retro-home-subtitle {
+  font-family: var(--font-secondary);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+  max-width: 600px;
+
+  /* Subtle retro styling */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* ===== MAP CONTAINER WITH RETRO BORDERS ===== */
+
+.retro-map-container {
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  position: relative;
+
+  /* Retro border styling */
+  border: var(--border-retro-thick);
+  border-radius: var(--radius-xl);
+
+  /* Retro shadows */
+  box-shadow: var(--shadow-retro-lg), var(--shadow-neon-accent);
+
+  /* Background for loading state */
+  background: var(--color-bg-secondary);
+
+  /* Subtle inner glow */
+  background-image: var(--gradient-overlay-light);
+
+  overflow: hidden;
+  transition: var(--transition-retro);
+}
+
+.retro-map-container:hover {
+  transform: var(--transform-hover-lift);
+  box-shadow: var(--shadow-retro-xl), var(--shadow-neon-intense);
+}
+
+/* Add retro corner accents */
+.retro-map-container::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  height: 6px;
+  background: var(--gradient-accent);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  z-index: 1;
+}
+
+.retro-map-container::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  height: 6px;
+  background: var(--gradient-primary);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  z-index: 1;
+}
+
+/* Style the map component inside */
+.retro-map-container > * {
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--radius-xl) - 3px);
+}
+
+/* ===== CALL-TO-ACTION SECTION ===== */
+
+.retro-home-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+/* ===== EXPLORE SPOTS BUTTON WITH ANIMATIONS ===== */
+
+.retro-btn-primary {
+  /* Base button styling */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  /* Typography */
+  font-family: var(--font-primary);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  text-decoration: none;
+  color: var(--color-text-primary);
+
+  /* Sizing */
+  padding: var(--space-4) var(--space-8);
+  min-height: var(--button-height-lg);
+
+  /* Visual styling */
+  background: var(--gradient-primary);
+  border: var(--border-retro-neon);
+  border-radius: var(--radius-lg);
+
+  /* Shadows and effects */
+  box-shadow: var(--shadow-retro-md), var(--shadow-neon-primary);
+  text-shadow: var(--text-shadow-retro);
+
+  /* Transitions */
+  transition: var(--transition-retro);
+
+  /* Prevent text selection */
+  user-select: none;
+
+  /* Cursor */
+  cursor: pointer;
+
+  /* Position for transform effects */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover effects */
+.retro-btn-primary:hover {
+  transform: var(--transform-hover-lift) var(--transform-hover-scale);
+  box-shadow: var(--shadow-retro-lg), var(--shadow-neon-intense);
+
+  /* Enhance gradient on hover */
+  background: var(--gradient-accent);
+  border-color: var(--color-accent-light);
+
+  /* Enhance text glow */
+  text-shadow: var(--text-shadow-retro), var(--text-shadow-neon);
+}
+
+/* Active/pressed state */
+.retro-btn-primary:active {
+  transform: var(--transform-press);
+  box-shadow: var(--shadow-retro-sm), var(--shadow-neon-primary);
+}
+
+/* Focus state for accessibility */
+.retro-btn-primary:focus {
+  outline: none;
+  box-shadow: var(--shadow-retro-md), var(--shadow-neon-primary),
+    0 0 0 3px rgba(var(--color-accent-rgb), 0.5);
+}
+
+/* Animated background effect */
+.retro-btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left var(--transition-slow) var(--ease-out);
+}
+
+.retro-btn-primary:hover::before {
+  left: 100%;
+}
+
+/* ===== KEYFRAME ANIMATIONS ===== */
+
+@keyframes retro-glow {
+  0% {
+    filter: drop-shadow(var(--shadow-neon-primary));
+  }
+  100% {
+    filter: drop-shadow(var(--shadow-neon-intense));
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet styles */
+@media (max-width: 768px) {
+  .retro-home {
+    padding: var(--space-6) var(--space-3);
+    gap: var(--space-6);
+  }
+
+  .retro-home-title {
+    font-size: var(--text-4xl);
+  }
+
+  .retro-home-subtitle {
+    font-size: var(--text-lg);
+  }
+
+  .retro-map-container {
+    height: 300px;
+    max-width: 100%;
+  }
+
+  .retro-btn-primary {
+    font-size: var(--text-base);
+    padding: var(--space-3) var(--space-6);
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 480px) {
+  .retro-home {
+    padding: var(--space-4) var(--space-2);
+    gap: var(--space-4);
+  }
+
+  .retro-home-title {
+    font-size: var(--text-3xl);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+
+  .retro-home-subtitle {
+    font-size: var(--text-base);
+  }
+
+  .retro-map-container {
+    height: 250px;
+    border-width: 2px;
+  }
+
+  .retro-btn-primary {
+    font-size: var(--text-sm);
+    padding: var(--space-3) var(--space-4);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .retro-home-title {
+    animation: none;
+  }
+
+  .retro-btn-primary::before {
+    transition: none;
+  }
+
+  .retro-btn-primary:hover::before {
+    left: -100%;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .retro-home-title {
+    -webkit-text-fill-color: var(--color-text-primary);
+    background: none;
+  }
+
+  .retro-map-container {
+    border-width: 4px;
+  }
+
+  .retro-btn-primary {
+    border-width: 3px;
+  }
+}
+
+/* Focus-visible for better keyboard navigation */
+.retro-btn-primary:focus-visible {
+  box-shadow: var(--shadow-retro-md), var(--shadow-neon-primary),
+    0 0 0 4px rgba(var(--color-accent-rgb), 0.6);
+}
