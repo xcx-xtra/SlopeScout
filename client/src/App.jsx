@@ -5,229 +5,195 @@ import {
   Route,
   Link,
   NavLink,
-} from "react-router-dom"; // Import NavLink
-import { ToastContainer, toast } from "react-toastify";
+} from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import "./styles/variables.css";
+import "./styles/components/navigation.css";
+import "./styles/pages/home.css";
 import Map from "./components/Map";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import SpotForm from "./components/SpotForm";
-import {
-  AddSpot,
-  SpotDetail,
-  EditSpot,
-  ManageSpots,
-  SpotList,
-} from "./pages/Spots"; // Added ManageSpots and SpotList
-import Profile from "./pages/Profile"; // Import the Profile component
-import SpotPage from "./pages/SpotPage"; // Import SpotPage
+import { AddSpot, EditSpot, ManageSpots, SpotList } from "./pages/Spots";
+import Profile from "./pages/Profile";
+import SpotPage from "./pages/SpotPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Define reusable Tailwind classes for navigation links
-  const navLinkClasses =
-    "text-neutral-300 hover:text-white hover:bg-primary transition-colors px-3 py-2 rounded-md text-sm font-medium";
-  const activeNavLinkClasses =
-    "bg-primary text-white px-3 py-2 rounded-md text-sm font-medium";
-  const mobileNavLinkClasses =
-    "block px-3 py-2 rounded-md text-base font-medium text-neutral-300 hover:bg-primary hover:text-white transition-colors";
-  const mobileActiveNavLinkClasses =
-    "block px-3 py-2 rounded-md text-base font-medium bg-primary text-white";
 
   return (
     <Router>
-      <div className="App min-h-screen flex flex-col font-sans bg-gradient-to-r from-blue-500 via-green-900 to-white">
-        <nav className="bg-primary-dark text-white shadow-lg">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-            <Link
-              to="/"
-              className="text-2xl font-bold text-white hover:text-accent-300 transition-colors duration-150 ease-in-out"
-            >
+      <div className="retro-app">
+        <nav className="retro-nav">
+          <div className="retro-nav-container">
+            <Link to="/" className="retro-logo">
               SlopeScout
             </Link>
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white focus:outline-none p-2 rounded-md hover:bg-primary focus:bg-primary transition-colors duration-150 ease-in-out"
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`retro-mobile-menu-btn ${
+                isMobileMenuOpen ? "open" : ""
+              }`}
+            >
+              <svg
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  {isMobileMenuOpen ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  ) : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16m-7 6h7"
-                    />
-                  )}
-                </svg>
-              </button>
-            </div>
+                {isMobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16m-7 6h7"
+                  />
+                )}
+              </svg>
+            </button>
             {/* Desktop Menu */}
-            <ul className="hidden md:flex space-x-2 items-center">
-              <li>
-                <NavLink // Changed to NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    isActive ? activeNavLinkClasses : navLinkClasses
-                  }
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink // Changed to NavLink
-                  to="/add-spot"
-                  className={({ isActive }) =>
-                    isActive ? activeNavLinkClasses : navLinkClasses
-                  }
-                >
-                  Add Spot
-                </NavLink>
-              </li>
-              <li>
-                <NavLink // Changed to NavLink
-                  to="/profile"
-                  className={({ isActive }) =>
-                    isActive ? activeNavLinkClasses : navLinkClasses
-                  }
-                >
-                  Profile
-                </NavLink>
-              </li>
-              <li>
-                <NavLink // Changed to NavLink
-                  to="/manage-spots"
-                  className={({ isActive }) =>
-                    isActive ? activeNavLinkClasses : navLinkClasses
-                  }
-                >
-                  My Spots
-                </NavLink>
-              </li>
-              <li className="ml-4">
-                <Link
-                  to="/login"
-                  className="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
-                >
+            <div className="retro-nav-desktop">
+              <ul className="retro-nav-links">
+                <li>
+                  <NavLink
+                    to="/"
+                    className={({ isActive }) =>
+                      `retro-nav-link ${isActive ? "active" : ""}`
+                    }
+                  >
+                    Home
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/add-spot"
+                    className={({ isActive }) =>
+                      `retro-nav-link ${isActive ? "active" : ""}`
+                    }
+                  >
+                    Add Spot
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/profile"
+                    className={({ isActive }) =>
+                      `retro-nav-link ${isActive ? "active" : ""}`
+                    }
+                  >
+                    Profile
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/manage-spots"
+                    className={({ isActive }) =>
+                      `retro-nav-link ${isActive ? "active" : ""}`
+                    }
+                  >
+                    My Spots
+                  </NavLink>
+                </li>
+              </ul>
+              <div className="retro-auth-buttons">
+                <Link to="/login" className="retro-btn-login">
                   Login
                 </Link>
-              </li>
-              <li>
-                <Link
-                  to="/register"
-                  className="border border-accent-500 text-accent-300 hover:bg-accent-500 hover:text-white px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
-                >
+                <Link to="/register" className="retro-btn-register">
                   Register
                 </Link>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
           {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden absolute top-16 inset-x-0 bg-primary-dark p-2 space-y-1 sm:px-3 z-50 shadow-xl rounded-b-lg">
-              <NavLink // Changed to NavLink
+          <div
+            className={`retro-mobile-menu ${isMobileMenuOpen ? "open" : ""}`}
+          >
+            <div className="retro-mobile-nav-links">
+              <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                  `retro-mobile-nav-link ${isActive ? "active" : ""}`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
               </NavLink>
-              <NavLink // Changed to NavLink
+              <NavLink
                 to="/add-spot"
                 className={({ isActive }) =>
-                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                  `retro-mobile-nav-link ${isActive ? "active" : ""}`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Add Spot
               </NavLink>
-              <NavLink // Changed to NavLink
+              <NavLink
                 to="/profile"
                 className={({ isActive }) =>
-                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                  `retro-mobile-nav-link ${isActive ? "active" : ""}`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Profile
               </NavLink>
-              <NavLink // Changed to NavLink
+              <NavLink
                 to="/manage-spots"
                 className={({ isActive }) =>
-                  isActive ? mobileActiveNavLinkClasses : mobileNavLinkClasses
+                  `retro-mobile-nav-link ${isActive ? "active" : ""}`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 My Spots
               </NavLink>
-              <div className="pt-2">
-                <Link
-                  to="/login"
-                  className="block w-full text-center px-3 py-2 rounded-md text-base font-medium text-white bg-accent-500 hover:bg-accent-600 transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-              </div>
-              <div className="pt-1">
-                <Link
-                  to="/register"
-                  className="block w-full text-center px-3 py-2 rounded-md text-base font-medium text-accent-300 border border-accent-500 hover:bg-accent-500 hover:text-white transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Register
-                </Link>
-              </div>
             </div>
-          )}
+            <div className="retro-mobile-auth">
+              <Link
+                to="/login"
+                className="retro-mobile-btn-login"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="retro-mobile-btn-register"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Register
+              </Link>
+            </div>
+          </div>
         </nav>
         <main
-          className={`flex-grow container mx-auto ${
-            isMobileMenuOpen ? "pt-72 px-4 pb-4" : "p-4"
-          }`}
+          className={`retro-main ${isMobileMenuOpen ? "mobile-menu-open" : ""}`}
         >
           <ErrorBoundary>
             <Routes>
               <Route
                 path="/"
                 element={
-                  <div className="text-center py-10">
-                    <h1 className="text-4xl font-bold text-primary-dark mb-4 font-serif">
-                      Welcome to SlopeScout!
-                    </h1>
-                    <p className="text-lg text-neutral-600 mb-8">
+                  <div className="retro-home">
+                    <h1 className="retro-home-title">Welcome to SlopeScout!</h1>
+                    <p className="retro-home-subtitle">
                       Discover and share the best skating spots around.
                     </p>
-                    <div className="my-8 shadow-xl rounded-lg overflow-hidden w-full">
+                    <div className="retro-map-container">
                       <Map spots={[]} />{" "}
                       {/* Example: Pass empty spots or fetch featured spots */}
                     </div>
                     {/* Removed SpotForm from home, assuming it's mainly for adding spots */}
-                    <div className="mt-12">
-                      <Link
-                        to="/spots"
-                        className="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors shadow-md hover:shadow-lg"
-                      >
+                    <div className="retro-home-cta">
+                      <Link to="/spots" className="retro-btn-primary">
                         Explore Spots
                       </Link>
                     </div>
